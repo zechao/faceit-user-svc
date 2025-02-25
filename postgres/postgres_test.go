@@ -3,6 +3,7 @@ package postgres_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/pressly/goose/v3"
 	"github.com/stretchr/testify/require"
@@ -47,6 +48,9 @@ func setupTestDatabase(t *testing.T) (*gorm.DB, error) {
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{
 		TranslateError: true,
+		NowFunc: func() time.Time {
+			return time.Now().UTC()
+		},
 	})
 	db = db.Debug()
 	if err != nil {

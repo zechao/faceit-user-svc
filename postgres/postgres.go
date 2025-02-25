@@ -3,15 +3,14 @@ package postgres
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-const (
-	
-)
+const ()
 
 // Config define the configuration for the PostgreSQL connection.
 type Config struct {
@@ -37,6 +36,9 @@ func NewPostgreStorage(cfg Config) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger:         dbLogger,
 		TranslateError: true,
+		NowFunc: func() time.Time {
+			return time.Now().UTC()
+		},
 	})
 
 	if cfg.DebugMode {

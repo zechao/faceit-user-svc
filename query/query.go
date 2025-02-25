@@ -39,10 +39,13 @@ type Query struct {
 
 // PaginationResponse is a generic struct that holds the paginated data and metadata.
 type PaginationResponse[T any] struct {
-	Page         int   `json:"page"`
-	PageSize     int   `json:"page_size"`
-	TotalRecords int64 `json:"total_records"`
-	Data         []T   `json:"data"`
+	Page         int                 `json:"page"`
+	PageSize     int                 `json:"page_size"`
+	TotalRecords int64               `json:"total_records"`
+	SortBy       string              `json:"sort_by"`
+	SortOrder    string              `json:"sort_order"`
+	Filters      map[string][]string `json:"filters"` // filters used in the query, for debugging purposes.
+	Data         []T                 `json:"data"`
 }
 
 // QueryFromURL parses the query parameters from a URL and returns a Query object.
