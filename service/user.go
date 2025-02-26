@@ -25,6 +25,7 @@ func NewUserService(userRepo user.Repository) user.Service {
 
 // CreateUser implements user.Service. It will generate a new UUID for the user and save it to the repository.
 func (ur *userService) CreateUser(ctx context.Context, u *user.User) (*user.User, error) {
+	u.ID = uuid.New() // Generate a new UUID for the user
 	hasedPassword, err := user.HashPassword(u.Password)
 	if err != nil {
 		return nil, err
@@ -33,7 +34,7 @@ func (ur *userService) CreateUser(ctx context.Context, u *user.User) (*user.User
 
 	res, err := ur.userRepo.CreateUser(ctx, u)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fail creating user %w", err)
 	}
 	return res, nil
 }
@@ -41,16 +42,19 @@ func (ur *userService) CreateUser(ctx context.Context, u *user.User) (*user.User
 // UpdateUser implements will check if the user exists before updating.
 // return not found error if not exist and return duplicated error if the update cause a duplicated key.
 // otherwise update the user and return the updated user.
-func (ur *userService) UpdateUser(ctx context.Context, id uuid.UUID, updateFields map[string]any) (*user.User, error) {
-	if password, ok := updateFields["password"].(string); ok && password != "" {
-		hashedPass, err := user.HashPassword(password)
-		if err != nil {
-			return nil, fmt.Errorf("failed to hash password: %w", err)
-		}
-		updateFields["password"] = hashedPass
+func (ur *userService) UpdateUser(ctx context.Context, input *user.UpdateUserInput) (*user.User, error) {
+	userToUpdate, err := ur.userRepo.GetUserByID(ctx, input.ID)
+	if err != nil {
+		return nil, err
+	}
+	userToUpdate.Update(input)
+
+	userToUpdate.Password, err = user.HashPassword(userToUpdate.Password)
+	if err != nil {
+		return nil, err
 	}
 
-	res, err := ur.userRepo.UpdateUser(ctx, id, updateFields)
+	res, err := ur.userRepo.UpdateUser(ctx, userToUpdate)
 	if err != nil {
 		return nil, err
 	}

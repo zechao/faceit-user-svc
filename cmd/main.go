@@ -2,10 +2,8 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"github.com/zechao/faceit-user-svc/config"
 	api "github.com/zechao/faceit-user-svc/http"
 	"github.com/zechao/faceit-user-svc/postgres"
@@ -30,18 +28,20 @@ func main() {
 
 	checkDBConnection(db)
 
-	router := mux.NewRouter()
+	router := gin.Default()
 
 	userStore := postgres.NewUserRepository(db)
 	userService := service.NewUserService(userStore)
-	userHandler := api.NewHandler(userService)
+	userHandler := api.NewUserHandler(userService)
+
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 	userHandler.RegisterRoutes(router)
 
 	host := config.ENVs.HTTPHost + ":" + config.ENVs.HTTPPort
 	log.Println("Listening on:", host)
 
-	handler := handlers.CORS()(router)
-	http.ListenAndServe(host, handler)
+	router.Run(host)
 }
 
 func checkDBConnection(db *gorm.DB) {

@@ -27,6 +27,39 @@ type User struct {
 	DeletedAt gorm.DeletedAt
 }
 
+type UpdateUserInput struct {
+	ID        uuid.UUID
+	FirstName *string
+	LastName  *string
+	NickName  *string
+	Password  *string
+	Email     *string
+	Country   *string
+}
+
+// Update updates the user fields with the provided input.
+func (u *User) Update(input *UpdateUserInput) {
+	if input.FirstName != nil {
+		u.FirstName = *input.FirstName
+	}
+	if input.LastName != nil {
+		u.LastName = *input.LastName
+	}
+	if input.NickName != nil {
+		u.NickName = *input.NickName
+	}
+	if input.Password != nil {
+		u.Password = *input.Password
+	}
+	if input.Email != nil {
+		u.Email = *input.Email
+	}
+	if input.Country != nil {
+		u.Country = *input.Country
+	}
+
+}
+
 // TableName returns the table name for the user model.
 func (User) TableName() string {
 	return "user_svc.users"
@@ -35,7 +68,7 @@ func (User) TableName() string {
 // Repository defines the interface for user data access operations.
 type Repository interface {
 	CreateUser(ctx context.Context, u *User) (*User, error)
-	UpdateUser(ctx context.Context, id uuid.UUID, updateFields map[string]any) (*User, error)
+	UpdateUser(ctx context.Context, u *User) (*User, error)
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	ListUsers(ctx context.Context, q query.Query) ([]User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*User, error)
@@ -45,7 +78,7 @@ type Repository interface {
 // Service defines the interface for user business logic operations.
 type Service interface {
 	CreateUser(ctx context.Context, u *User) (*User, error)
-	UpdateUser(ctx context.Context, id uuid.UUID, updateFields map[string]any) (*User, error)
+	UpdateUser(ctx context.Context, input *UpdateUserInput) (*User, error)
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	ListUsers(ctx context.Context, q query.Query) (*query.PaginationResponse[User], error)
 }

@@ -11,6 +11,8 @@ var (
 	ErrNotfound = NewNotFound("record not found")
 	// ErrDuplicated represents when a record already exists in DB
 	ErrDuplicated = NewConflict("record already exists")
+	// ErrInvalidPayload represents an invalid payload error
+	ErrInvalidPayload = NewWrongInput("invalid payload")
 )
 
 // Error represents a custom error structure.
@@ -22,8 +24,8 @@ type Error struct {
 
 // Detail contains detail information of wrong input field.
 type Detail struct {
-	Field       string
-	Description string
+	Field       string `json:"field"`
+	Description string `json:"description"`
 }
 
 // New just calls to errors.New. This function is just to avoid a dependency on the standard library.
@@ -46,14 +48,16 @@ func Join(errs ...error) error {
 	return errors.Join(errs...)
 }
 
-func NewInternal(message string) *Error {
+// NewInternal creates a new internal error with a specific message.
+func NewInternal(message string) error {
 	return &Error{
 		Code:    http.StatusInternalServerError,
 		Message: message,
 	}
 }
 
-func NewWrongInput(message string, details ...Detail) *Error {
+// NewWrongInput creates a new wrong input error with specific message and details.
+func NewWrongInput(message string, details ...Detail) error {
 	return &Error{
 		Code:    http.StatusBadRequest,
 		Message: message,
@@ -61,24 +65,28 @@ func NewWrongInput(message string, details ...Detail) *Error {
 	}
 }
 
-func NewNotFound(message string) *Error {
+// NewNotFound creates a new not found error with specific message.
+func NewNotFound(message string) error {
 	return &Error{
 		Code:    http.StatusNotFound,
 		Message: message,
 	}
 }
 
-func NewConflict(message string) *Error {
+// NewConflict creates a new conflict error with specific message.
+func NewConflict(message string) error {
 	return &Error{
 		Code:    http.StatusConflict,
 		Message: message,
 	}
 }
 
+// AddDetail adds a new detail to the error.
 func (e *Error) AddDetail(detail Detail) {
 	e.Details = append(e.Details, detail)
 }
 
+// Error returns the error message with details if any.
 func (e Error) Error() string {
 	var res string
 	res = e.Message

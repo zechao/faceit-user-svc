@@ -16,10 +16,10 @@ import (
 
 var (
 	tesUser = user.User{
-		FirstName: "jin",
-		LastName:  "zechao",
-		NickName:  "zen",
-		Email:     "zechao@gmail.com",
+		FirstName: "john",
+		LastName:  "doe",
+		NickName:  "j.d",
+		Email:     "j.d@gmail.com",
 		Password:  "superpassword",
 		Country:   "ES",
 	}
@@ -77,50 +77,69 @@ func TestUpdateUser(t *testing.T) {
 	t.Run("should update user successfully", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
 		svc := service.NewUserService(mockUserRepo)
+		currentUser := tesUser
+		currentUser.ID = uuid.New()
+
 		expectedUser := user.User{
-			ID:        uuid.New(),
-			FirstName: "John",
-			LastName:  "Doe",
-			NickName:  "johndoe",
-			Email:     "johndoe@example.com",
-			Country:   "USA",
-			Password:  "newpassword",
+			FirstName: "zechao",
+			LastName:  "jin",
+			NickName:  "zen",
+			Email:     "zechao@gmail.com",
+			Password:  "superhasedpassword",
+			Country:   "GB",
+		}
+		updateInput := user.UpdateUserInput{
+			ID:        expectedUser.ID,
+			FirstName: &expectedUser.FirstName,
+			LastName:  &expectedUser.LastName,
+			NickName:  &expectedUser.NickName,
+			Email:     &expectedUser.Email,
+			Country:   &expectedUser.Country,
+			Password:  &expectedUser.Password,
 		}
 
-		reqInput := map[string]any{
-			"first_name": expectedUser.FirstName,
-			"last_name":  expectedUser.LastName,
-			"nick_name":  expectedUser.NickName,
-			"email":      expectedUser.NickName,
-			"password":   expectedUser.Password,
-			"country":    expectedUser.NickName,
-		}
-
-		mockUserRepo.EXPECT().UpdateUser(ctx, expectedUser.ID, gomock.Cond(func(filter map[string]any) bool {
-			for k, v := range filter {
-				if k == "password" && !user.ComparePassword(v.(string), expectedUser.Password) {
-					return false
-				}
-				if reqInput[k] != v {
-					return false
-				}
-			}
-			return true
+		mockUserRepo.EXPECT().GetUserByID(ctx, expectedUser.ID).Return(&currentUser, nil)
+		mockUserRepo.EXPECT().UpdateUser(ctx, gomock.Cond(func(uu *user.User) bool {
+			return uu.FirstName == expectedUser.FirstName &&
+				uu.LastName == expectedUser.LastName &&
+				uu.NickName == expectedUser.NickName &&
+				uu.Email == expectedUser.Email &&
+				uu.Country == expectedUser.Country &&
+				// check that the password is hashed
+				user.ComparePassword(uu.Password, expectedUser.Password)
 
 		})).Return(&expectedUser, nil)
 
-		res, err := svc.UpdateUser(ctx, expectedUser.ID, reqInput)
+		res, err := svc.UpdateUser(ctx, &updateInput)
 
 		assert.Equal(t, &expectedUser, res)
 		assert.Nil(t, err)
 	})
 
-	t.Run("should return error when repository returns error", func(t *testing.T) {
+	t.Run("should return error when get return error", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
 		svc := service.NewUserService(mockUserRepo)
-		mockUserRepo.EXPECT().UpdateUser(ctx, gomock.Any(), gomock.Any()).Return(nil, errTest)
+		testID := uuid.New()
+		mockUserRepo.EXPECT().GetUserByID(ctx, testID).Return(nil, errTest)
 
-		res, err := svc.UpdateUser(ctx, uuid.New(), map[string]any{})
+		res, err := svc.UpdateUser(ctx, &user.UpdateUserInput{
+			ID: testID,
+		})
+
+		assert.Nil(t, res)
+		assert.ErrorIs(t, err, errTest)
+	})
+
+	t.Run("should return error when uppdate return error", func(t *testing.T) {
+		mockUserRepo := mocks.NewMockRepository(ctrl)
+		svc := service.NewUserService(mockUserRepo)
+		currentUser := tesUser
+		mockUserRepo.EXPECT().GetUserByID(ctx, gomock.Any()).Return(&currentUser, nil)
+		mockUserRepo.EXPECT().UpdateUser(ctx, gomock.Any()).Return(nil, errTest)
+
+		res, err := svc.UpdateUser(ctx, &user.UpdateUserInput{
+			ID: uuid.New(),
+		})
 
 		assert.Nil(t, res)
 		assert.ErrorIs(t, err, errTest)

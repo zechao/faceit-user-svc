@@ -44,30 +44,15 @@ func (r userRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 }
 
 // Update perform update the given fields and return updated user.
-func (r userRepository) UpdateUser(ctx context.Context, id uuid.UUID, fields map[string]any) (*user.User, error) {
-	var u user.User
-	err := r.db.Transaction(func(tx *gorm.DB) error {
-		res := tx.Model(&user.User{}).Where("id = ?", id).Updates(fields)
-		if res.Error != nil {
-			if errors.Is(res.Error, gorm.ErrDuplicatedKey) {
-				return errors.ErrDuplicated
-			}
-			return fmt.Errorf("failed to update user: %w", res.Error)
-		}
-
-		if res.RowsAffected == 0 {
-			return errors.ErrNotfound
-		}
-		err := tx.First(&u, "id = ?", id).Error
-		if err != nil {
-			return fmt.Errorf("failed to get user by ID: %w", err)
-		}
-		return nil
-	})
+func (r userRepository) UpdateUser(ctx context.Context, u *user.User) (*user.User, error) {
+	err := r.db.Save(&u).Error
 	if err != nil {
-		return nil, err
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return nil, errors.ErrDuplicated
+		}
+		return nil, fmt.Errorf("failed to update user: %w", err)
 	}
-	return &u, nil
+	return u, nil
 }
 
 // List list all users in the database. It should be able to filter and paginate the result based on the provided query object.

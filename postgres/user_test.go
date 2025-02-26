@@ -82,15 +82,14 @@ func TestUpdateUser(t *testing.T) {
 		tu := testUser
 		err := tx.Create(&tu).Error
 		assert.NoError(t, err)
-		tu.Country = "UK"
-		tu.NickName = "nickname"
 
-		res, err := repo.UpdateUser(ctx, tu.ID, map[string]any{
-			"country":   tu.Country,
-			"nick_name": tu.NickName,
-		})
+		tu2 := testUser
+		tu2.Country = "UK"
+		tu2.NickName = "nickname"
+
+		res, err := repo.UpdateUser(ctx, &tu2)
 		assert.NoError(t, err)
-		assertEqualUser(t, tu, res)
+		assertEqualUser(t, tu2, res)
 	})
 
 	t.Run("success create if not exist", func(t *testing.T) {
@@ -98,11 +97,9 @@ func TestUpdateUser(t *testing.T) {
 		defer tx.Rollback()
 		repo := postgres.NewUserRepository(tx)
 		tu := testUser
-		res, err := repo.UpdateUser(ctx, tu.ID, map[string]interface{}{
-			"country": "UK",
-		})
-		assert.ErrorIs(t, err, errors.ErrNotfound)
-		assert.Nil(t, res)
+		res, err := repo.UpdateUser(ctx, &tu)
+		assert.NoError(t, err)
+		assertEqualUser(t, tu, res)
 	})
 
 	t.Run("fail updating to existing email", func(t *testing.T) {
@@ -119,45 +116,12 @@ func TestUpdateUser(t *testing.T) {
 		err = tx.Create(&tu2).Error
 		assert.NoError(t, err)
 
-		res, err := repo.UpdateUser(ctx, tu.ID, map[string]any{
-			"email": tu2.Email, // Update to existing email
-		})
+		// update to existing email
+		tu.Email = tu2.Email
+
+		res, err := repo.UpdateUser(ctx, &tu)
 		assert.ErrorIs(t, err, errors.ErrDuplicated)
 		assert.Nil(t, res)
-	})
-	t.Run("update success", func(t *testing.T) {
-		tx := db.Begin()
-		defer tx.Rollback()
-		repo := postgres.NewUserRepository(tx)
-		tu := testUser
-
-		err := tx.Create(&tu).Error
-		assert.NoError(t, err)
-
-		expected := testUser
-		expected.LastName = "newLastName"
-		expected.FirstName = "newFirstName"
-		expected.NickName = "newNickName"
-		expected.Email = "newEmail@example.com"
-		expected.Country = "ES"
-		expected.Password = "newPassword"
-
-		res, err := repo.UpdateUser(ctx, tu.ID, map[string]any{
-			"first_name": expected.FirstName,
-			"last_name":  expected.LastName,
-			"nick_name":  expected.NickName,
-			"email":      expected.Email,
-			"country":    expected.Country,
-			"password":   expected.Password,
-		})
-
-		assert.NoError(t, err)
-		assert.Equal(t, expected.FirstName, res.FirstName)
-		assert.Equal(t, expected.LastName, res.LastName)
-		assert.Equal(t, expected.NickName, res.NickName)
-		assert.Equal(t, expected.Email, res.Email)
-		assert.Equal(t, expected.Country, res.Country)
-		assert.Equal(t, expected.Password, res.Password)
 	})
 }
 

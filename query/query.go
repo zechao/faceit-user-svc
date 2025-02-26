@@ -66,12 +66,6 @@ func QueryFromURL(params url.Values) (*Query, error) {
 
 	var details []errors.Detail
 
-	if !params.Has(paramPage) {
-		details = append(details, errors.Detail{
-			Field:       paramPage,
-			Description: "page can not be empty",
-		})
-	}
 	if val := params.Get(paramPage); val != "" {
 		page, err := strconv.Atoi(val)
 		if page > 1 {

@@ -118,18 +118,18 @@ func (mr *MockRepositoryMockRecorder) ListUsers(ctx, q any) *gomock.Call {
 }
 
 // UpdateUser mocks base method.
-func (m *MockRepository) UpdateUser(ctx context.Context, id uuid.UUID, updateFields map[string]any) (*user.User, error) {
+func (m *MockRepository) UpdateUser(ctx context.Context, u *user.User) (*user.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUser", ctx, id, updateFields)
+	ret := m.ctrl.Call(m, "UpdateUser", ctx, u)
 	ret0, _ := ret[0].(*user.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateUser indicates an expected call of UpdateUser.
-func (mr *MockRepositoryMockRecorder) UpdateUser(ctx, id, updateFields any) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) UpdateUser(ctx, u any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockRepository)(nil).UpdateUser), ctx, id, updateFields)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockRepository)(nil).UpdateUser), ctx, u)
 }
 
 // MockService is a mock of Service interface.
@@ -201,16 +201,16 @@ func (mr *MockServiceMockRecorder) ListUsers(ctx, q any) *gomock.Call {
 }
 
 // UpdateUser mocks base method.
-func (m *MockService) UpdateUser(ctx context.Context, id uuid.UUID, updateFields map[string]any) (*user.User, error) {
+func (m *MockService) UpdateUser(ctx context.Context, input *user.UpdateUserInput) (*user.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUser", ctx, id, updateFields)
+	ret := m.ctrl.Call(m, "UpdateUser", ctx, input)
 	ret0, _ := ret[0].(*user.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateUser indicates an expected call of UpdateUser.
-func (mr *MockServiceMockRecorder) UpdateUser(ctx, id, updateFields any) *gomock.Call {
+func (mr *MockServiceMockRecorder) UpdateUser(ctx, input any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockService)(nil).UpdateUser), ctx, id, updateFields)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockService)(nil).UpdateUser), ctx, input)
 }

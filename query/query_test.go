@@ -14,13 +14,6 @@ func TestQueryFromURLFail(t *testing.T) {
 		inputQuery    string
 		expectedError error
 	}{
-		"emtpy param": {
-			inputQuery: "",
-			expectedError: errors.NewWrongInput(query.ErrCodeInvalidParameter, errors.Detail{
-				Field:       "page",
-				Description: "page can not be empty",
-			}),
-		},
 		"invalid page value": {
 			inputQuery: "page=abc",
 			expectedError: errors.NewWrongInput(query.ErrCodeInvalidParameter, errors.Detail{
