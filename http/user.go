@@ -1,3 +1,4 @@
+// Package http contains the HTTP handlers for the user service.
 package http
 
 import (
@@ -81,7 +82,7 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 func (h *UserHandler) UpdateUser(ctx *gin.Context) {
 	id, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errors.NewWrongInput("invalid user id"))
+		ctx.JSON(http.StatusBadRequest, ErrorInvalidUserID)
 		return
 	}
 
@@ -92,7 +93,7 @@ func (h *UserHandler) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	if err := req.Vaildate(); err != nil {
+	if err := req.Validate(); err != nil {
 		handlerError(ctx, err)
 		return
 	}
@@ -129,6 +130,7 @@ func (h *UserHandler) ListUsers(ctx *gin.Context) {
 	queryInput, err := query.QueryFromURL(ctx.Request.URL.Query())
 	if err != nil {
 		handlerError(ctx, err)
+		return
 	}
 
 	listRes, err := h.service.ListUsers(ctx.Request.Context(), *queryInput)
@@ -175,7 +177,7 @@ func (h *UserHandler) DeleteUser(ctx *gin.Context) {
 		handlerError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, nil)
+	ctx.JSON(http.StatusOK, nil)
 
 }
 
@@ -187,18 +189,6 @@ type CreateUserRequest struct {
 	Password  string `json:"password"`
 	Email     string `json:"email"`
 	Country   string `json:"country"`
-}
-
-// handlerError handles the error response for the http handlers
-func handlerError(ctx *gin.Context, err error) {
-	svcErr := new(errors.Error)
-	if errors.As(err, &svcErr) {
-		ctx.JSON(svcErr.Code, svcErr)
-		return
-	}
-	ctx.JSON(http.StatusInternalServerError, errors.NewInternal(
-		err.Error(),
-	))
 }
 
 // Validate validates the fields of a CreateUserRequest. It returns an error if any field is invalid.
@@ -277,7 +267,7 @@ type UpdateUserRequest struct {
 	Country   *string `json:"country,omitempty"`
 }
 
-func (c UpdateUserRequest) Vaildate() error {
+func (c UpdateUserRequest) Validate() error {
 	details := []errors.Detail{}
 	if c.FirstName != nil && *c.FirstName == "" {
 		details = append(details, errors.Detail{
@@ -361,5 +351,5 @@ type ListUsersResponse struct {
 	SortBy       string              `json:"sort_by"`
 	SortOrder    string              `json:"sort_order"`
 	Filters      map[string][]string `json:"filters"`
-	Users        []UserResponse      `json:"users"`
+	Users        []UserResponse      `json:"data"`
 }

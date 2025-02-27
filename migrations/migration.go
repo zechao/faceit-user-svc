@@ -13,8 +13,9 @@ import (
 //go:embed *.sql
 var embedMigrations embed.FS
 
+// RunMigration runs the migration for the database for given direction
 func main() {
-	RunMigration(postgres.Config{
+	runMigration(postgres.Config{
 		DBUser:     config.ENVs.DBUser,
 		DBHost:     config.ENVs.DBHost,
 		DBName:     config.ENVs.DBName,
@@ -24,7 +25,7 @@ func main() {
 	})
 }
 
-func RunMigration(config postgres.Config) {
+func runMigration(config postgres.Config) {
 	db, err := postgres.NewPostgreStorage(config)
 	if err != nil {
 		log.Fatalf("wrong db config: %v", err)

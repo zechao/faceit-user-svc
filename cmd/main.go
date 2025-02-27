@@ -2,13 +2,15 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pressly/goose/v3"
 	"github.com/zechao/faceit-user-svc/config"
 	api "github.com/zechao/faceit-user-svc/http"
 	"github.com/zechao/faceit-user-svc/postgres"
 	"github.com/zechao/faceit-user-svc/service"
-	"gorm.io/gorm"
+	"github.com/zechao/faceit-user-svc/tracing"
 )
 
 func main() {
@@ -26,32 +28,34 @@ func main() {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 
-	checkDBConnection(db)
+	conn, err := db.DB()
+	if err != nil {
+		log.Fatalf("Failed to get underlaying db connection: %v", err)
+	}
+	if err := goose.Up(conn, "./migrations"); err != nil {
+		log.Fatalf("Failed to execute migrations: %v", err)
+	}
 
 	router := gin.Default()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+	router.Use(tracing.TracingMiddleware())
 
 	userStore := postgres.NewUserRepository(db)
 	userService := service.NewUserService(userStore)
 	userHandler := api.NewUserHandler(userService)
 
 	router.Use(gin.Logger())
+	// recover from any panics and return a 500 error
 	router.Use(gin.Recovery())
+
 	userHandler.RegisterRoutes(router)
 
 	host := config.ENVs.HTTPHost + ":" + config.ENVs.HTTPPort
 	log.Println("Listening on:", host)
 
-	router.Run(host)
-}
+	if err := router.Run(host); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("Failed to run server: %v", err)
+	}
 
-func checkDBConnection(db *gorm.DB) {
-	conn, err := db.DB()
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = conn.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("DB connected")
 }
