@@ -13,6 +13,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// EventType represents the type of event related to a user.
+type EventType string
+
+const (
+	UserCreated EventType = "UserCreated"
+	UserUpdated EventType = "UserUpdated"
+	UserDeleted EventType = "UserDeleted"
+)
+
 // User represents a user domain model.
 type User struct {
 	ID        uuid.UUID
@@ -92,6 +101,7 @@ func HashPassword(pass string) (string, error) {
 	return string(hash), nil
 }
 
+// ComparePassword compares a hashed password with a plain text password.
 func ComparePassword(hash, plain string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(plain))
 

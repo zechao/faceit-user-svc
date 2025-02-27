@@ -5,37 +5,43 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/zechao/faceit-user-svc/event"
 	"github.com/zechao/faceit-user-svc/query"
 	"github.com/zechao/faceit-user-svc/user"
 )
 
 type userService struct {
-	userRepo user.Repository
+	userRepo     user.Repository
+	eventHandler event.EventHandler
 }
 
-type PasswordHasher interface {
-	HashPassword(password string) (string, error)
-}
-
-func NewUserService(userRepo user.Repository) user.Service {
+// NewUserService creates a new user service with the provided user repository and event handler.
+func NewUserService(userRepo user.Repository, eventHandler event.EventHandler) user.Service {
 	return &userService{
-		userRepo: userRepo,
+		userRepo:     userRepo,
+		eventHandler: eventHandler,
 	}
 }
 
 // CreateUser implements user.Service. It will generate a new UUID for the user and save it to the repository.
 func (ur *userService) CreateUser(ctx context.Context, u *user.User) (*user.User, error) {
 	u.ID = uuid.New() // Generate a new UUID for the user
-	hasedPassword, err := user.HashPassword(u.Password)
+	hashedPassword, err := user.HashPassword(u.Password)
 	if err != nil {
 		return nil, err
 	}
-	u.Password = hasedPassword
+	u.Password = hashedPassword
 
 	res, err := ur.userRepo.CreateUser(ctx, u)
 	if err != nil {
 		return nil, fmt.Errorf("fail creating user %w", err)
 	}
+
+	err = ur.eventHandler.SendEvent(ctx, string(user.UserCreated), res.ID)
+	if err != nil {
+		return nil, fmt.Errorf("fail sending event %w", err)
+	}
+
 	return res, nil
 }
 
@@ -58,16 +64,30 @@ func (ur *userService) UpdateUser(ctx context.Context, input *user.UpdateUserInp
 	if err != nil {
 		return nil, err
 	}
+
+	err = ur.eventHandler.SendEvent(ctx, string(user.UserUpdated), res.ID)
+	if err != nil {
+		return nil, fmt.Errorf("fail sending event %w", err)
+	}
 	return res, nil
 }
 
-// DeleteUser implements user.Service. It will delete the user from the repository by ID.
+// DeleteUser will delete the user from the repository by ID.
 // If the user does not exist do nothing
 func (ur *userService) DeleteUser(ctx context.Context, id uuid.UUID) error {
-	return ur.userRepo.DeleteUser(ctx, id)
+	err := ur.userRepo.DeleteUser(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	err = ur.eventHandler.SendEvent(ctx, string(user.UserDeleted), id)
+	if err != nil {
+		return fmt.Errorf("fail sending event %w", err)
+	}
+	return nil
 }
 
-// ListUsers will list the users from the repository based on the query.
+// ListUsers lists the users from the repository based on the query.
 // If no users are found, it will return an empty slice and nil error
 // If the page is out of range, it will return an empty slice and no error.
 func (ur *userService) ListUsers(ctx context.Context, q query.Query) (*query.PaginationResponse[user.User], error) {

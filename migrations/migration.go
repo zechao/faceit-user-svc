@@ -15,7 +15,7 @@ var embedMigrations embed.FS
 
 // RunMigration runs the migration for the database for given direction
 func main() {
-	runMigration(postgres.Config{
+	RunMigration(postgres.Config{
 		DBUser:     config.ENVs.DBUser,
 		DBHost:     config.ENVs.DBHost,
 		DBName:     config.ENVs.DBName,

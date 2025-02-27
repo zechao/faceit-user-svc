@@ -5,26 +5,14 @@ import (
 	"log"
 	"time"
 
+	"github.com/zechao/faceit-user-svc/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-const ()
-
-// Config define the configuration for the PostgreSQL connection.
-type Config struct {
-	DBUser     string
-	DBHost     string
-	DBName     string
-	DBPassword string
-	DBPort     string
-	DBSSLMode  string
-	DebugMode  bool
-}
-
 // NewPostgreStorage creates a new PostgreSQL database connection for gorm.
-func NewPostgreStorage(cfg Config) (*gorm.DB, error) {
+func NewPostgreStorage(cfg config.DBConfig) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		cfg.DBHost, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBPort, cfg.DBSSLMode, "UTC")
 	dbLogger := logger.New(

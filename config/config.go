@@ -6,16 +6,37 @@ import (
 	"strconv"
 
 	"github.com/joho/godotenv"
-	"github.com/zechao/faceit-user-svc/postgres"
 )
 
 type Config struct {
-	APPEnv               string
-	HTTPHost             string
-	HTTPPort             string
-	JWTSecret            string
-	JWTExpirationSecoond int
-	postgres.Config
+	APPEnv      string
+	HTTPHost    string
+	HTTPPort    string
+	DBConfig    DBConfig
+	NatsConfig  NatsConfig
+	RedisConfig RedisConfig
+}
+
+// Config define the configuration for the PostgreSQL connection.
+type DBConfig struct {
+	DBUser     string
+	DBHost     string
+	DBName     string
+	DBPassword string
+	DBPort     string
+	DBSSLMode  string
+	DebugMode  bool
+}
+
+// NatsConfig define the configuration for the NATS connection.
+type NatsConfig struct {
+	NatsHost string
+	NatsPort string
+	Topic    string
+}
+
+type RedisConfig struct {
+	RedisURL string
 }
 
 var ENVs = initConfig()
@@ -37,7 +58,7 @@ func initConfig() Config {
 		APPEnv:   appEnv,
 		HTTPHost: getEnv("HTTP_HOST", "localhost"),
 		HTTPPort: getEnv("HTTP_PORT", "8080"),
-		Config: postgres.Config{
+		DBConfig: DBConfig{
 			DBUser:     getEnv("DB_USER", "user"),
 			DBName:     getEnv("DB_NAME", "user"),
 			DBHost:     getEnv("DB_HOST", "localhost"),
@@ -45,6 +66,14 @@ func initConfig() Config {
 			DBPort:     getEnv("DB_PORT", "5432"),
 			DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
 			DebugMode:  debug,
+		},
+		NatsConfig: NatsConfig{
+			NatsHost: getEnv("NATS_HOST", "localhost"),
+			NatsPort: getEnv("NATS_PORT", "4222"),
+			Topic:    getEnv("NATS_TOPIC", "user-svc"),
+		},
+		RedisConfig: RedisConfig{
+			RedisURL: getEnv("REDIS_URL", "localhost:6379"),
 		},
 	}
 
