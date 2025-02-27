@@ -9,12 +9,10 @@ import (
 )
 
 type Config struct {
-	APPEnv      string
-	HTTPHost    string
-	HTTPPort    string
-	DBConfig    DBConfig
-	NatsConfig  NatsConfig
-	RedisConfig RedisConfig
+	APPEnv     string
+	HTTPPort   string
+	DBConfig   DBConfig
+	NatsConfig NatsConfig
 }
 
 // Config define the configuration for the PostgreSQL connection.
@@ -35,10 +33,6 @@ type NatsConfig struct {
 	Topic    string
 }
 
-type RedisConfig struct {
-	RedisURL string
-}
-
 var ENVs = initConfig()
 
 // by default load .env file if APP_ENV is local
@@ -48,15 +42,15 @@ func initConfig() Config {
 	if e := os.Getenv("APP_ENV"); e != "" {
 		appEnv = e
 	}
+	// only load env variable from env file if the app is running in local
 	if appEnv == "local" {
-		// it wont load env variable if is already set in the system
+
 		godotenv.Load()
 	}
 
 	debug, _ := strconv.ParseBool(getEnv("DEBUG_MODE", "false"))
 	return Config{
 		APPEnv:   appEnv,
-		HTTPHost: getEnv("HTTP_HOST", "localhost"),
 		HTTPPort: getEnv("HTTP_PORT", "8080"),
 		DBConfig: DBConfig{
 			DBUser:     getEnv("DB_USER", "user"),
@@ -71,9 +65,6 @@ func initConfig() Config {
 			NatsHost: getEnv("NATS_HOST", "localhost"),
 			NatsPort: getEnv("NATS_PORT", "4222"),
 			Topic:    getEnv("NATS_TOPIC", "user-svc"),
-		},
-		RedisConfig: RedisConfig{
-			RedisURL: getEnv("REDIS_URL", "localhost:6379"),
 		},
 	}
 

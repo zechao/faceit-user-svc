@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/zechao/faceit-user-svc/config"
@@ -15,16 +14,10 @@ import (
 func NewPostgreStorage(cfg config.DBConfig) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		cfg.DBHost, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBPort, cfg.DBSSLMode, "UTC")
-	dbLogger := logger.New(
-		log.Default(),
-		logger.Config{
-			IgnoreRecordNotFoundError: true,
-			LogLevel:                  logger.Warn,
-		},
-	)
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger:         dbLogger,
 		TranslateError: true,
+		Logger:         logger.Default.LogMode(logger.Silent), //disable loggging
 		NowFunc: func() time.Time {
 			return time.Now().UTC()
 		},

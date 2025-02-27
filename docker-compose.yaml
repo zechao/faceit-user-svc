@@ -9,7 +9,7 @@ services:
     ports:
       - "${DB_PORT}:5432"
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 15s
@@ -20,3 +20,5 @@ services:
     ports:
       - ${NATS_PORT}:4222
       - "8222:8222"
+volumes:
+  postgres-data:

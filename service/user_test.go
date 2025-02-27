@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	mockevent "github.com/zechao/faceit-user-svc/event/mocks"
 	"github.com/zechao/faceit-user-svc/query"
 	"github.com/zechao/faceit-user-svc/service"
 	"github.com/zechao/faceit-user-svc/user"
@@ -76,7 +77,8 @@ func TestUpdateUser(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	t.Run("should update user successfully", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		svc := service.NewUserService(mockUserRepo)
+		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 		currentUser := tesUser
 		currentUser.ID = uuid.New()
 
@@ -109,6 +111,7 @@ func TestUpdateUser(t *testing.T) {
 				user.ComparePassword(uu.Password, expectedUser.Password)
 
 		})).Return(&expectedUser, nil)
+		
 
 		res, err := svc.UpdateUser(ctx, &updateInput)
 

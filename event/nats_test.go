@@ -1,4 +1,4 @@
-package event
+package event_test
 
 import (
 	"context"
@@ -11,10 +11,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
+	"github.com/zechao/faceit-user-svc/event"
 	"github.com/zechao/faceit-user-svc/tracing"
 )
 
 var natsURL string
+
+const (
+	testTopic = "test-topic"
+)
 
 func TestMain(m *testing.M) {
 	ctx := context.Background()
@@ -56,7 +61,7 @@ func TestSendEvent(t *testing.T) {
 	}
 	defer nc.Close()
 
-	handler := NewNatsEventHandler(nc, "test-topic")
+	handler := event.NewNatsEventHandler(nc, testTopic)
 
 	t.Run("successful event publish with traceID from context", func(t *testing.T) {
 		traceID := uuid.NewString()
@@ -64,7 +69,7 @@ func TestSendEvent(t *testing.T) {
 		eventType := "test-event"
 		payload := map[string]string{"key": "value"}
 
-		event := Event{
+		event := event.Event{
 			TraceID:   traceID,
 			EventType: eventType,
 			Timestamp: time.Now().Unix(),
@@ -74,13 +79,11 @@ func TestSendEvent(t *testing.T) {
 		eventBytes, err := json.Marshal(event)
 		assert.NoError(t, err)
 
-		sub, err := nc.SubscribeSync("test-topic")
-		if err != nil {
-			t.Fatalf("Failed to subscribe to topic: %v", err)
-		}
+		sub, err := nc.SubscribeSync(testTopic)
+		assert.NoError(t, err)
 
 		err = handler.SendEvent(ctx, eventType, payload)
-		assert.NoError(t, err)
+		assert.NoError(t, err, "Failed to send event")
 
 		msg, err := sub.NextMsg(5 * time.Second)
 		assert.NoError(t, err)
@@ -92,10 +95,8 @@ func TestSendEvent(t *testing.T) {
 		eventType := "test-event"
 		payload := "data"
 
-		sub, err := nc.SubscribeSync("test-topic")
-		if err != nil {
-			t.Fatalf("Failed to subscribe to topic: %v", err)
-		}
+		sub, err := nc.SubscribeSync(testTopic)
+		assert.NoError(t, err, "Failed to subscribe to test-topic")
 
 		err = handler.SendEvent(ctx, eventType, payload)
 		assert.NoError(t, err)
@@ -103,8 +104,9 @@ func TestSendEvent(t *testing.T) {
 		msg, err := sub.NextMsg(5 * time.Second)
 		assert.NoError(t, err)
 
-		var event Event
-		json.Unmarshal(msg.Data, &event)
+		var event event.Event
+		err = json.Unmarshal(msg.Data, &event)
+		assert.NoError(t, err)
 		assert.NotEmpty(t, event.TraceID)
 		assert.Equal(t, eventType, event.EventType)
 		assert.Equal(t, payload, event.Payload)
@@ -125,7 +127,7 @@ func TestSendEvent(t *testing.T) {
 		eventType := "test-event"
 		payload := "data"
 
-		event := Event{
+		event := event.Event{
 			TraceID:   traceID,
 			EventType: eventType,
 			Timestamp: time.Now().Unix(),
@@ -135,7 +137,7 @@ func TestSendEvent(t *testing.T) {
 		eventBytes, err := json.Marshal(event)
 		assert.NoError(t, err)
 		assert.NotNil(t, eventBytes)
-		sub, err := nc.SubscribeSync("test-topic")
+		sub, err := nc.SubscribeSync(testTopic)
 		assert.NoError(t, err)
 		assert.NotNil(t, sub)
 
@@ -148,14 +150,14 @@ func TestSendEvent(t *testing.T) {
 }
 func TestNewNatConnection(t *testing.T) {
 	t.Run("successful connection", func(t *testing.T) {
-		nc, err := NewNatConnection(natsURL)
+		nc, err := event.NewNatConnection(natsURL)
 		assert.NoError(t, err)
 		assert.NotNil(t, nc)
 		defer nc.Close()
 	})
 
 	t.Run("failed connection with invalid URL", func(t *testing.T) {
-		_, err := NewNatConnection("invalid-url")
+		_, err := event.NewNatConnection("invalid-url")
 		assert.Error(t, err)
 	})
 }

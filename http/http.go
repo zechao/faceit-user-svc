@@ -18,3 +18,4 @@ func handlerError(ctx *gin.Context, err error) {
 		err.Error(),
 	))
 }
+
