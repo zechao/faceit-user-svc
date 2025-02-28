@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"log/slog"
 	"os"
 	"strconv"
 
@@ -11,6 +12,7 @@ import (
 type Config struct {
 	APPEnv     string
 	HTTPPort   string
+	LogLevel   int
 	DBConfig   DBConfig
 	NatsConfig NatsConfig
 }
@@ -23,7 +25,6 @@ type DBConfig struct {
 	DBPassword string
 	DBPort     string
 	DBSSLMode  string
-	DebugMode  bool
 }
 
 // NatsConfig define the configuration for the NATS connection.
@@ -35,23 +36,22 @@ type NatsConfig struct {
 
 var ENVs = initConfig()
 
-// by default load .env file if APP_ENV is local
+// by default load .env file if APP_ENV is developme
 // otherwise load environment variables from the system
 func initConfig() Config {
-	appEnv := "local"
+	appEnv := "development"
+	// override appEnv if APP_ENV is set
 	if e := os.Getenv("APP_ENV"); e != "" {
 		appEnv = e
 	}
 	// only load env variable from env file if the app is running in local
-	if appEnv == "local" {
-
+	if appEnv == "development" {
 		godotenv.Load()
 	}
-
-	debug, _ := strconv.ParseBool(getEnv("DEBUG_MODE", "false"))
 	return Config{
 		APPEnv:   appEnv,
 		HTTPPort: getEnv("HTTP_PORT", "8080"),
+		LogLevel: getIntEnv("LOG_LEVEL", int(slog.LevelInfo)),
 		DBConfig: DBConfig{
 			DBUser:     getEnv("DB_USER", "user"),
 			DBName:     getEnv("DB_NAME", "user"),
@@ -59,7 +59,6 @@ func initConfig() Config {
 			DBPassword: getEnv("DB_PASSWORD", "ecom"),
 			DBPort:     getEnv("DB_PORT", "5432"),
 			DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
-			DebugMode:  debug,
 		},
 		NatsConfig: NatsConfig{
 			NatsHost: getEnv("NATS_HOST", "localhost"),
@@ -68,6 +67,14 @@ func initConfig() Config {
 		},
 	}
 
+}
+
+func IsDevelopment() bool {
+	return ENVs.APPEnv == "development"
+}
+
+func IsProduction() bool {
+	return ENVs.APPEnv == "production"
 }
 
 func getEnv(key, fallback string) string {

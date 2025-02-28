@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	stdlog "log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,6 +15,7 @@ import (
 	"github.com/zechao/faceit-user-svc/config"
 	"github.com/zechao/faceit-user-svc/event"
 	api "github.com/zechao/faceit-user-svc/http"
+	"github.com/zechao/faceit-user-svc/log"
 	"github.com/zechao/faceit-user-svc/postgres"
 	"github.com/zechao/faceit-user-svc/service"
 	"github.com/zechao/faceit-user-svc/tracing"
@@ -24,23 +24,38 @@ import (
 )
 
 func main() {
-	//	logger := log.NewStdoutJSONLogger(slog.LevelInfo)
-
+	log.Println("Starting application in " + config.ENVs.APPEnv + " mode")
 	db, err := setupDatabase()
 	if err != nil {
-		stdlog.Fatalf("Failed to setup database: %v", err)
+		log.Fatalf("Failed to setup database: %v", err)
 	}
 
-	eventHandler, err := setupEventHandler()
+	natConn, err := event.NewNatConnection(fmt.Sprintf("nats://%s:%s", config.ENVs.NatsConfig.NatsHost, config.ENVs.NatsConfig.NatsPort))
 	if err != nil {
-		stdlog.Fatalf("Failed to setup event handler: %v", err)
+		log.Fatalf("failed to connect to NATS: %v", err)
 	}
+	defer natConn.Close()
 
+	eventHandler := event.NewNatsEventHandler(natConn, config.ENVs.NatsConfig.Topic)
+	//Subscribe to the event bus to simulate another service
+	eventHandler.Subscribe(func(event event.Event) {
+		data, err := json.Marshal(event)
+		if err != nil {
+			log.Printf("Failed to marshal event: %v", err)
+		}
+		log.Printf("Received event: %v", string(data))
+	})
+
+	if config.IsProduction() {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router := gin.New()
 	// recover from any panics and return a 500 error
 	router.Use(gin.Recovery())
 	// tracing middleware to set traceID in context
 	router.Use(tracing.TracingMiddleware())
+	// log request and response
+	router.Use(log.GinLoggerMiddleware())
 
 	// add health check endpoint
 	router.GET("/health", func(c *gin.Context) {
@@ -54,7 +69,7 @@ func main() {
 	userHandler := api.NewUserHandler(userService)
 	userHandler.RegisterRoutes(router)
 
-	stdlog.Println("Listening on port:", config.ENVs.HTTPPort)
+	log.Println("Listening on port:", config.ENVs.HTTPPort)
 	srv := &http.Server{
 		Addr:    ":" + config.ENVs.HTTPPort,
 		Handler: router.Handler(),
@@ -63,7 +78,7 @@ func main() {
 	go func() {
 		// service connections
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			stdlog.Fatalf("listen: %s\n", err)
+			log.Fatalf("listen: %s\n", err)
 		}
 	}()
 
@@ -72,38 +87,19 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	stdlog.Println("Shutdown Server ...")
+	log.Println("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		stdlog.Fatal("Server Shutdown:", err)
+		log.Fatalf("Server Shutdown: %v", err)
 	}
 	// catching ctx.Done(). timeout of 5 seconds.
 	select {
 	case <-ctx.Done():
-		stdlog.Println("timeout of 5 seconds.")
+		log.Println("timeout of 5 seconds.")
 	}
-	stdlog.Println("Server exiting")
-}
-
-func setupEventHandler() (event.EventHandler, error) {
-	natConn, err := event.NewNatConnection(fmt.Sprintf("nats://%s:%s", config.ENVs.NatsConfig.NatsHost, config.ENVs.NatsConfig.NatsPort))
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to NATS: %v", err)
-	}
-	defer natConn.Close()
-
-	eventHandler := event.NewNatsEventHandler(natConn, config.ENVs.NatsConfig.Topic)
-	//Subscribe to the event bus to simulate another service
-	eventHandler.Subscribe(func(event event.Event) {
-		data, err := json.Marshal(event)
-		if err != nil {
-			stdlog.Printf("Failed to marshal event: %v", err)
-		}
-		stdlog.Printf("Received event: %v", string(data))
-	})
-	return eventHandler, nil
+	log.Println("Server exiting")
 }
 
 func setupDatabase() (*gorm.DB, error) {
@@ -114,7 +110,6 @@ func setupDatabase() (*gorm.DB, error) {
 		DBPassword: config.ENVs.DBConfig.DBPassword,
 		DBPort:     config.ENVs.DBConfig.DBPort,
 		DBSSLMode:  config.ENVs.DBConfig.DBSSLMode,
-		DebugMode:  config.ENVs.DBConfig.DebugMode,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to the database: %w", err)

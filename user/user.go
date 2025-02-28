@@ -4,14 +4,18 @@ package user
 //go:generate mockgen -source=user.go -destination=mocks/user_mock.go -package=mocks
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/zechao/faceit-user-svc/query"
+
+	"github.com/zechao/faceit-user-svc/errors"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
+
+// ErrPasswordTooLong is an error returned when the password is too long to hash.
+var ErrPasswordTooLong = errors.NewWrongInput("can't hash password")
 
 // EventType represents the type of event related to a user.
 type EventType string
@@ -96,7 +100,7 @@ type Service interface {
 func HashPassword(pass string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 	if err != nil {
-		return "", fmt.Errorf("error hashing password")
+		return "", ErrPasswordTooLong
 	}
 	return string(hash), nil
 }

@@ -3,9 +3,11 @@ package service
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/zechao/faceit-user-svc/event"
+	"github.com/zechao/faceit-user-svc/log"
 	"github.com/zechao/faceit-user-svc/query"
 	"github.com/zechao/faceit-user-svc/user"
 )
@@ -26,8 +28,12 @@ func NewUserService(userRepo user.Repository, eventHandler event.EventHandler) u
 // CreateUser implements user.Service. It will generate a new UUID for the user and save it to the repository.
 func (ur *userService) CreateUser(ctx context.Context, u *user.User) (*user.User, error) {
 	u.ID = uuid.New() // Generate a new UUID for the user
+	log.Info(ctx, "creating new user", slog.String(
+		"user_id", u.ID.String(),
+	))
 	hashedPassword, err := user.HashPassword(u.Password)
 	if err != nil {
+		log.Error(ctx, "failed to hash password", slog.Any("error", err))
 		return nil, err
 	}
 	u.Password = hashedPassword
@@ -49,6 +55,9 @@ func (ur *userService) CreateUser(ctx context.Context, u *user.User) (*user.User
 // return not found error if not exist and return duplicated error if the update cause a duplicated key.
 // otherwise update the user and return the updated user.
 func (ur *userService) UpdateUser(ctx context.Context, input *user.UpdateUserInput) (*user.User, error) {
+	log.Info(ctx, "updating user", slog.String(
+		"user_id", input.ID.String(),
+	))
 	userToUpdate, err := ur.userRepo.GetUserByID(ctx, input.ID)
 	if err != nil {
 		return nil, err
@@ -57,6 +66,9 @@ func (ur *userService) UpdateUser(ctx context.Context, input *user.UpdateUserInp
 
 	userToUpdate.Password, err = user.HashPassword(userToUpdate.Password)
 	if err != nil {
+		log.Error(ctx, "failed to hash password", slog.String(
+			"user_id", userToUpdate.ID.String(),
+		), slog.Any("error", err))
 		return nil, err
 	}
 
@@ -75,6 +87,9 @@ func (ur *userService) UpdateUser(ctx context.Context, input *user.UpdateUserInp
 // DeleteUser will delete the user from the repository by ID.
 // If the user does not exist do nothing
 func (ur *userService) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	log.Info(ctx, "deleting user", slog.String(
+		"user_id", id.String(),
+	))
 	err := ur.userRepo.DeleteUser(ctx, id)
 	if err != nil {
 		return err
@@ -91,6 +106,9 @@ func (ur *userService) DeleteUser(ctx context.Context, id uuid.UUID) error {
 // If no users are found, it will return an empty slice and nil error
 // If the page is out of range, it will return an empty slice and no error.
 func (ur *userService) ListUsers(ctx context.Context, q query.Query) (*query.PaginationResponse[user.User], error) {
+	log.Info(ctx, "listing user with query", slog.Any(
+		"query", q,
+	))
 	count, err := ur.userRepo.CountUsers(ctx, q.Filters)
 	if err != nil {
 		return nil, err

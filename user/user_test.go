@@ -23,10 +23,10 @@ func TestHashPassword(t *testing.T) {
 	t.Run("should return error when password too long", func(t *testing.T) {
 		var password string
 		for i := 0; i < 20; i++ {
-			password += "password1234567890" // make the password longer than 72 characters
+			password += "password1234567890000000" // make the password longer than 72 characters
 		}
 		hashedPassword, err := user.HashPassword(password)
-		assert.ErrorIs(t, err, bcrypt.ErrPasswordTooLong)
+		assert.ErrorIs(t, err, user.ErrPasswordTooLong)
 		assert.Empty(t, hashedPassword)
 	})
 }

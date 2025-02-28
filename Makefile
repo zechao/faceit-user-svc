@@ -5,7 +5,20 @@ install-tools:
 	go install go.uber.org/mock/mockgen@latest
 
 
-mock_generate:
+run:
+	echo "Running the application using docker-compose in production mode"
+	@docker-compose --env-file .env.production up -d --build
+
+run-dev:
+	@echo "Running the application in development mode"
+	docker-compose up -d db nats --wait
+	@go run cmd/main.go
+
+test:
+	@go test -v ./...
+
+
+mockgen:
 	@go generate ./... 
 
 migration-create:

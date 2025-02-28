@@ -1,5 +1,5 @@
 services:
-  sql:
+  db:
     image: postgres:17-alpine
     restart: always
     environment:
@@ -20,5 +20,29 @@ services:
     ports:
       - ${NATS_PORT}:4222
       - "8222:8222"
+  app:
+    build: .
+    environment:
+      APP_ENV: ${APP_ENV}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      NATS_HOST: nats
+      NATS_PORT: ${NATS_PORT}
+      NATS_TOPIC: ${NATS_TOPIC}
+      HTTP_HOST: localhost
+      HTTP_PORT: ${HTTP_PORT}
+    depends_on:
+      - db
+      - nats
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${HTTP_PORT}/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
 volumes:
   postgres-data:

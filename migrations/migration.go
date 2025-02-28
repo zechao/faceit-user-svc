@@ -15,17 +15,17 @@ var embedMigrations embed.FS
 
 // RunMigration runs the migration for the database for given direction
 func main() {
-	RunMigration(postgres.Config{
-		DBUser:     config.ENVs.DBUser,
-		DBHost:     config.ENVs.DBHost,
-		DBName:     config.ENVs.DBName,
-		DBPassword: config.ENVs.DBPassword,
-		DBPort:     config.ENVs.DBPort,
-		DBSSLMode:  config.ENVs.DBSSLMode,
+	runMigration(config.DBConfig{
+		DBUser:     config.ENVs.DBConfig.DBUser,
+		DBHost:     config.ENVs.DBConfig.DBHost,
+		DBName:     config.ENVs.DBConfig.DBName,
+		DBPassword: config.ENVs.DBConfig.DBPassword,
+		DBPort:     config.ENVs.DBConfig.DBPort,
+		DBSSLMode:  config.ENVs.DBConfig.DBSSLMode,
 	})
 }
 
-func runMigration(config postgres.Config) {
+func runMigration(config config.DBConfig) {
 	db, err := postgres.NewPostgreStorage(config)
 	if err != nil {
 		log.Fatalf("wrong db config: %v", err)

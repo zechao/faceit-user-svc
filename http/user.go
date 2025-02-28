@@ -177,7 +177,7 @@ func (h *UserHandler) DeleteUser(ctx *gin.Context) {
 		handlerError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusOK, nil)
+	ctx.Status(http.StatusOK)
 
 }
 

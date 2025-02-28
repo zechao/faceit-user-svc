@@ -2,10 +2,12 @@
 package query
 
 import (
+	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/zechao/faceit-user-svc/errors"
 	"gorm.io/gorm"
 )
@@ -129,6 +131,17 @@ func QueryFromURL(params url.Values) (*Query, error) {
 	for key, values := range params {
 		if key != paramPage && key != paramPageSize && key != paramSortBy && key != paramSortOrder {
 			q.Filters[key] = values
+		}
+		if key == "id" {
+			for _, v := range values {
+				if _, err := uuid.Parse(v); err != nil {
+					details = append(details, errors.Detail{
+						Field:       "id",
+						Description: fmt.Sprintf("invalid id format: %s", v),
+					})
+
+				}
+			}
 		}
 	}
 

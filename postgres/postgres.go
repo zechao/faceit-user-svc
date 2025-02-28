@@ -26,10 +26,6 @@ func NewPostgreStorage(cfg config.DBConfig) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to open db connection: %w", err)
 	}
 
-	if cfg.DebugMode {
-		db = db.Debug()
-	}
-
 	conn, err := db.DB()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get underlaying db connection: %w", err)
