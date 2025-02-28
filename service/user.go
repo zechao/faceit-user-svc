@@ -26,17 +26,15 @@ func NewUserService(userRepo user.Repository, eventHandler event.EventHandler) u
 }
 
 // CreateUser implements user.Service. It will generate a new UUID for the user and save it to the repository.
-func (ur *userService) CreateUser(ctx context.Context, u *user.User) (*user.User, error) {
-	u.ID = uuid.New() // Generate a new UUID for the user
+func (ur *userService) CreateUser(ctx context.Context, input *user.CreateUserInput) (*user.User, error) {
+	u, err := user.NewUser(input)
+	if err != nil {
+		return nil, fmt.Errorf("fail creating user %w", err)
+	}
+
 	log.Info(ctx, "creating new user", slog.String(
 		"user_id", u.ID.String(),
 	))
-	hashedPassword, err := user.HashPassword(u.Password)
-	if err != nil {
-		log.Error(ctx, "failed to hash password", slog.Any("error", err))
-		return nil, err
-	}
-	u.Password = hashedPassword
 
 	res, err := ur.userRepo.CreateUser(ctx, u)
 	if err != nil {
@@ -58,17 +56,17 @@ func (ur *userService) UpdateUser(ctx context.Context, input *user.UpdateUserInp
 	log.Info(ctx, "updating user", slog.String(
 		"user_id", input.ID.String(),
 	))
+	
 	userToUpdate, err := ur.userRepo.GetUserByID(ctx, input.ID)
 	if err != nil {
 		return nil, err
 	}
-	userToUpdate.Update(input)
 
-	userToUpdate.Password, err = user.HashPassword(userToUpdate.Password)
+	err = userToUpdate.Update(input)
 	if err != nil {
-		log.Error(ctx, "failed to hash password", slog.String(
+		log.Error(ctx, "failed to update user", slog.String(
 			"user_id", userToUpdate.ID.String(),
-		), slog.Any("error", err))
+		))
 		return nil, err
 	}
 

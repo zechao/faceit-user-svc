@@ -35,6 +35,15 @@ var (
 		Password:  "securepassword123",
 		Country:   "ES",
 	}
+
+	testCreateUserInput = user.CreateUserInput{
+		FirstName: "John",
+		LastName:  "Doe",
+		NickName:  "AB123",
+		Email:     "john.doe@example.com",
+		Password:  "securepassword123",
+		Country:   "ES",
+	}
 	errTest = errors.NewInternal("test error")
 )
 
@@ -276,14 +285,14 @@ func TestCreateUser(t *testing.T) {
 		"fail by service error": {
 			requestBody: strings.NewReader(string(createRequest)),
 			mockSetup: func() {
-				mockService.EXPECT().CreateUser(gomock.Any(), gomock.Any()).Return(nil, errTest)
+				mockService.EXPECT().CreateUser(gomock.Any(), &testCreateUserInput).Return(nil, errTest)
 			},
 			expectedStatus: http.StatusInternalServerError,
 		},
 		"success valid request": {
 			requestBody: strings.NewReader(string(createRequest)),
 			mockSetup: func() {
-				mockService.EXPECT().CreateUser(gomock.Any(), gomock.Any()).Return(&testUser, nil)
+				mockService.EXPECT().CreateUser(gomock.Any(), &testCreateUserInput).Return(&testUser, nil)
 			},
 			expectedStatus: http.StatusCreated,
 		},

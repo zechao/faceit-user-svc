@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	mockevent "github.com/zechao/faceit-user-svc/event/mocks"
+	mockEvent "github.com/zechao/faceit-user-svc/event/mocks"
 	"github.com/zechao/faceit-user-svc/query"
 	"github.com/zechao/faceit-user-svc/service"
 	"github.com/zechao/faceit-user-svc/user"
@@ -24,6 +24,16 @@ var (
 		Password:  "superpassword",
 		Country:   "ES",
 	}
+
+	testCreateUserInput = user.CreateUserInput{
+		FirstName: "john",
+		LastName:  "doe",
+		NickName:  "j.d",
+		Email:     "j.d@gmail.com",
+		Password:  "superpassword",
+		Country:   "ES",
+	}
+
 	errTest = errors.New("test error")
 )
 
@@ -33,7 +43,7 @@ func TestCreateUser(t *testing.T) {
 
 	t.Run("should create user successfully", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		eventHandler := mockevent.NewMockEventHandler(ctrl)
+		eventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, eventHandler)
 
 		reqUser := tesUser
@@ -56,7 +66,7 @@ func TestCreateUser(t *testing.T) {
 		eventHandler.EXPECT().SendEvent(ctx, string(user.UserCreated), expectedUser.ID).
 			Return(nil)
 
-		res, err := svc.CreateUser(ctx, &tesUser)
+		res, err := svc.CreateUser(ctx, &testCreateUserInput)
 
 		assert.Equal(t, &expectedUser, res)
 		assert.Nil(t, err)
@@ -64,18 +74,18 @@ func TestCreateUser(t *testing.T) {
 
 	t.Run("should fail when repository return error", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		eventHandler := mockevent.NewMockEventHandler(ctrl)
+		eventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, eventHandler)
 
 		mockUserRepo.EXPECT().CreateUser(ctx, gomock.Any()).Return(nil, errTest)
 
-		res, err := svc.CreateUser(ctx, &tesUser)
+		res, err := svc.CreateUser(ctx, &testCreateUserInput)
 		assert.Nil(t, res)
 		assert.ErrorIs(t, err, errTest)
 	})
 	t.Run("should fail when event handler return error", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		eventHandler := mockevent.NewMockEventHandler(ctrl)
+		eventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, eventHandler)
 
 		expectedUser := tesUser
@@ -85,7 +95,7 @@ func TestCreateUser(t *testing.T) {
 		eventHandler.EXPECT().SendEvent(ctx, string(user.UserCreated), expectedUser.ID).
 			Return(errTest)
 
-		res, err := svc.CreateUser(ctx, &tesUser)
+		res, err := svc.CreateUser(ctx, &testCreateUserInput)
 		assert.Nil(t, res)
 		assert.ErrorIs(t, err, errTest)
 	})
@@ -97,7 +107,7 @@ func TestUpdateUser(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	t.Run("should update user successfully", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 		currentUser := tesUser
 		currentUser.ID = uuid.New()
@@ -141,7 +151,7 @@ func TestUpdateUser(t *testing.T) {
 
 	t.Run("should return error when get return error", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 		testID := uuid.New()
 		mockUserRepo.EXPECT().GetUserByID(ctx, testID).Return(nil, errTest)
@@ -156,7 +166,7 @@ func TestUpdateUser(t *testing.T) {
 
 	t.Run("should return error when uppdate return error", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 		currentUser := tesUser
 		mockUserRepo.EXPECT().GetUserByID(ctx, gomock.Any()).Return(&currentUser, nil)
@@ -172,7 +182,7 @@ func TestUpdateUser(t *testing.T) {
 
 	t.Run("should return error when event handler return error", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 		currentUser := tesUser
 		mockUserRepo.EXPECT().GetUserByID(ctx, gomock.Any()).Return(&currentUser, nil)
@@ -193,24 +203,24 @@ func TestDeleteUser(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	id := uuid.New()
 	tests := map[string]struct {
-		setupMocks  func(mockUserRepo *mocks.MockRepository, mockEventHandler *mockevent.MockEventHandler)
+		setupMocks  func(mockUserRepo *mocks.MockRepository, mockEventHandler *mockEvent.MockEventHandler)
 		expectedErr error
 	}{
 		"should delete user successfully": {
-			setupMocks: func(mockUserRepo *mocks.MockRepository, mockEventHandler *mockevent.MockEventHandler) {
+			setupMocks: func(mockUserRepo *mocks.MockRepository, mockEventHandler *mockEvent.MockEventHandler) {
 				mockUserRepo.EXPECT().DeleteUser(ctx, id).Return(nil)
 				mockEventHandler.EXPECT().SendEvent(ctx, string(user.UserDeleted), id).Return(nil)
 			},
 			expectedErr: nil,
 		},
 		"fail deleting user": {
-			setupMocks: func(mockUserRepo *mocks.MockRepository, mockEventHandler *mockevent.MockEventHandler) {
+			setupMocks: func(mockUserRepo *mocks.MockRepository, mockEventHandler *mockEvent.MockEventHandler) {
 				mockUserRepo.EXPECT().DeleteUser(ctx, id).Return(errTest)
 			},
 			expectedErr: errTest,
 		},
 		"fail sending event": {
-			setupMocks: func(mockUserRepo *mocks.MockRepository, mockEventHandler *mockevent.MockEventHandler) {
+			setupMocks: func(mockUserRepo *mocks.MockRepository, mockEventHandler *mockEvent.MockEventHandler) {
 				mockUserRepo.EXPECT().DeleteUser(ctx, id).Return(nil)
 				mockEventHandler.EXPECT().SendEvent(ctx, string(user.UserDeleted), id).Return(errTest)
 			},
@@ -221,7 +231,7 @@ func TestDeleteUser(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			mockUserRepo := mocks.NewMockRepository(ctrl)
-			mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+			mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 			svc := service.NewUserService(mockUserRepo, mockEventHandler)
 
 			tc.setupMocks(mockUserRepo, mockEventHandler)
@@ -241,7 +251,7 @@ func TestListUsers(t *testing.T) {
 
 	t.Run("success list user one page", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 
 		q := query.Query{
@@ -282,7 +292,7 @@ func TestListUsers(t *testing.T) {
 
 	t.Run("success list last page", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 		users := []user.User{
 			tesUser,
@@ -323,7 +333,7 @@ func TestListUsers(t *testing.T) {
 
 	t.Run("empty list when total count is zero", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 
 		q := query.Query{
@@ -358,7 +368,7 @@ func TestListUsers(t *testing.T) {
 
 	t.Run("empty list when page requested is beyond the last page", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 
 		totalCount := int64(12) // Assuming there are 12 users in total
@@ -395,7 +405,7 @@ func TestListUsers(t *testing.T) {
 
 	t.Run("fail when count return error", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 
 		q := query.Query{
@@ -416,7 +426,7 @@ func TestListUsers(t *testing.T) {
 
 	t.Run("fail when list user return error", func(t *testing.T) {
 		mockUserRepo := mocks.NewMockRepository(ctrl)
-		mockEventHandler := mockevent.NewMockEventHandler(ctrl)
+		mockEventHandler := mockEvent.NewMockEventHandler(ctrl)
 		svc := service.NewUserService(mockUserRepo, mockEventHandler)
 
 		q := query.Query{

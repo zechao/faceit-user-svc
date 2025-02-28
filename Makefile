@@ -6,7 +6,7 @@ install-tools:
 
 
 run:
-	echo "Running the application using docker-compose in production mode"
+	@echo "Running the application using docker-compose in production mode"
 	@docker compose --env-file .env.production up -d --build
 
 run-dev:

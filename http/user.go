@@ -54,7 +54,7 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	user, err := h.service.CreateUser(ctx.Request.Context(), &user.User{
+	user, err := h.service.CreateUser(ctx.Request.Context(), &user.CreateUserInput{
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
 		NickName:  req.NickName,

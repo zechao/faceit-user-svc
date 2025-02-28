@@ -157,7 +157,7 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 }
 
 // CreateUser mocks base method.
-func (m *MockService) CreateUser(ctx context.Context, u *user.User) (*user.User, error) {
+func (m *MockService) CreateUser(ctx context.Context, u *user.CreateUserInput) (*user.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", ctx, u)
 	ret0, _ := ret[0].(*user.User)

@@ -4,6 +4,7 @@ package user
 //go:generate mockgen -source=user.go -destination=mocks/user_mock.go -package=mocks
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -40,6 +41,35 @@ type User struct {
 	DeletedAt gorm.DeletedAt
 }
 
+// CreateUserInput represents the input for creating a user.
+type CreateUserInput struct {
+	FirstName string
+	LastName  string
+	NickName  string
+	Password  string
+	Email     string
+	Country   string
+}
+
+// NewUser creates a new user with the provided input. It hashes the password before storing it.
+// it also generates a new UUID for the user.
+func NewUser(input *CreateUserInput) (*User, error) {
+	hashedPassword, err := HashPassword(input.Password)
+	if err != nil {
+		return nil, err
+	}
+	u := User{
+		ID:        uuid.New(),
+		FirstName: input.FirstName,
+		LastName:  input.LastName,
+		NickName:  input.NickName,
+		Password:  hashedPassword,
+		Email:     input.Email,
+		Country:   input.Country,
+	}
+	return &u, nil
+}
+
 type UpdateUserInput struct {
 	ID        uuid.UUID
 	FirstName *string
@@ -51,7 +81,8 @@ type UpdateUserInput struct {
 }
 
 // Update updates the user fields with the provided input.
-func (u *User) Update(input *UpdateUserInput) {
+func (u *User) Update(input *UpdateUserInput) error {
+
 	if input.FirstName != nil {
 		u.FirstName = *input.FirstName
 	}
@@ -62,7 +93,11 @@ func (u *User) Update(input *UpdateUserInput) {
 		u.NickName = *input.NickName
 	}
 	if input.Password != nil {
-		u.Password = *input.Password
+		hashedPassword, err := HashPassword(*input.Password)
+		if err != nil {
+			return fmt.Errorf("failed to hash password: %w", err)
+		}
+		u.Password = hashedPassword
 	}
 	if input.Email != nil {
 		u.Email = *input.Email
@@ -70,7 +105,7 @@ func (u *User) Update(input *UpdateUserInput) {
 	if input.Country != nil {
 		u.Country = *input.Country
 	}
-
+	return nil
 }
 
 // TableName returns the table name for the user model.
@@ -90,7 +125,7 @@ type Repository interface {
 
 // Service defines the interface for user business logic operations.
 type Service interface {
-	CreateUser(ctx context.Context, u *User) (*User, error)
+	CreateUser(ctx context.Context, u *CreateUserInput) (*User, error)
 	UpdateUser(ctx context.Context, input *UpdateUserInput) (*User, error)
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	ListUsers(ctx context.Context, q query.Query) (*query.PaginationResponse[User], error)
