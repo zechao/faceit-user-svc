@@ -114,14 +114,15 @@ func setupDatabase() (*gorm.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to the database: %w", err)
 	}
-
 	conn, err := db.DB()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get underlying db connection: %w", err)
 	}
+	log.Println("Running migrations")
 	if err := goose.Up(conn, "./migrations"); err != nil {
 		return nil, fmt.Errorf("failed to execute migrations: %w", err)
 	}
+	log.Println("Migrations completed")
 
 	return db, nil
 }

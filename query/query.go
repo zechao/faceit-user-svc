@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/uuid"
 	"github.com/zechao/faceit-user-svc/errors"
 	"gorm.io/gorm"
 )
@@ -26,6 +25,23 @@ const (
 
 	ErrCodeInvalidParameter = "INVALID_QUERY_PARAMETERS"
 )
+
+// supportedFilter is a map of supported filter parameters, boolean value is to indicate if its filter
+var supportedQuery = map[string]bool{
+	"first_name": true,
+	"last_name":  true,
+	"nick_name":  true,
+	"password":   true,
+	"email":      true,
+	"country":    true,
+	"created_at": true,
+	"updated_at": true,
+	"id":         true,
+	"page":       false,
+	"page_size":  false,
+	"sort_order": false,
+	"sort_by":    false,
+}
 
 // Query represents the parsed query parameters for pagination, sorting and filtering.
 type Query struct {
@@ -46,14 +62,14 @@ type PaginationResponse[T any] struct {
 	TotalRecords int64               `json:"total_records"`
 	SortBy       string              `json:"sort_by"`
 	SortOrder    string              `json:"sort_order"`
-	Filters      map[string][]string `json:"filters"` // filters used in the query, for debugging purposes.
+	Filters      map[string][]string `json:"filters"`
 	Data         []T                 `json:"data"`
 }
 
 // QueryFromURL parses the query parameters from a URL and returns a Query object.
 // It validates the page, page_size, sort_order, and sort_by parameters.
 // If any parameter is invalid, it returns an error with details.
-// be aware we are not resticting the max number of page_size here.
+// be aware we are not restricting the max number of page_size here.
 // the filter parameters here so that we can have flexible query options.
 // for example, /users?name=John&country=UK&country=ES
 // will be parsed as Filters: {"name": ["John"], "country": ["ES", "UK"]}
@@ -127,21 +143,17 @@ func QueryFromURL(params url.Values) (*Query, error) {
 		q.SortOrder = sortOrder
 	}
 
-	// Extract Filters
+	// check filters
 	for key, values := range params {
-		if key != paramPage && key != paramPageSize && key != paramSortBy && key != paramSortOrder {
-			q.Filters[key] = values
+		isFilter, validQuery := supportedQuery[key]
+		if !validQuery {
+			details = append(details, errors.Detail{
+				Field:       key,
+				Description: fmt.Sprintf("parameter %s is not supported", key),
+			})
 		}
-		if key == "id" {
-			for _, v := range values {
-				if _, err := uuid.Parse(v); err != nil {
-					details = append(details, errors.Detail{
-						Field:       "id",
-						Description: fmt.Sprintf("invalid id format: %s", v),
-					})
-
-				}
-			}
+		if isFilter {
+			q.Filters[key] = values
 		}
 	}
 

@@ -300,6 +300,21 @@ func TestListUser(t *testing.T) {
 		assert.Equal(t, users[0].ID, res[0].ID)
 	})
 
+	t.Run("invalid fields", func(t *testing.T) {
+		tx := db.Begin()
+		defer tx.Rollback()
+		repo := postgres.NewUserRepository(tx)
+		res, err := repo.ListUsers(ctx, query.Query{
+			PageSize: 10,
+			Page:     1,
+			Filters: map[string][]string{
+				"dsadsa": {"ES", "GB"},
+			},
+		})
+		assert.ErrorIs(t, err, errors.ErrInvalidPayload)
+		assert.Nil(t, res)
+	})
+
 }
 
 func TestGetUserByID(t *testing.T) {
@@ -385,6 +400,17 @@ func TestCountUsers(t *testing.T) {
 		})
 		assert.NoError(t, err)
 		assert.EqualValues(t, 2, res)
+	})
+
+	t.Run("invalid fields", func(t *testing.T) {
+		tx := db.Begin()
+		defer tx.Rollback()
+		repo := postgres.NewUserRepository(tx)
+		res, err := repo.CountUsers(ctx, map[string][]string{
+			"countries": {"ES", "GB"},
+		})
+		assert.ErrorIs(t, err, errors.ErrInvalidPayload)
+		assert.Zero(t, res)
 	})
 }
 func assertEqualUser(t *testing.T, expected user.User, actual *user.User) {

@@ -56,6 +56,13 @@ func TestQueryFromURLFail(t *testing.T) {
 				Description: "sort_order must be desc or asc",
 			}),
 		},
+		"unsupported filter": {
+			inputQuery: "a=b",
+			expectedError: errors.NewWrongInput(query.ErrCodeInvalidParameter, errors.Detail{
+				Field:       "a",
+				Description: "parameter a is not supported",
+			}),
+		},
 	}
 	for name, testCase := range tableTest {
 		t.Run(name, func(t *testing.T) {
@@ -84,15 +91,15 @@ func TestQueryFromURLSuccess(t *testing.T) {
 			},
 		},
 		"all set": {
-			inputQuery: "page=10&page_size=10&sort_order=asc&sort_by=name&country=UK&country=ES&name=zechao",
+			inputQuery: "page=10&page_size=10&sort_order=asc&sort_by=name&country=UK&country=ES&first_name=zechao",
 			expectedQuery: &query.Query{
 				Page:      10,
 				PageSize:  10,
 				SortOrder: "asc",
 				SortBy:    "name",
 				Filters: map[string][]string{
-					"country": {"UK", "ES"},
-					"name":    {"zechao"},
+					"country":    {"UK", "ES"},
+					"first_name": {"zechao"},
 				},
 			},
 		},

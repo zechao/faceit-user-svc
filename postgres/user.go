@@ -61,6 +61,9 @@ func (r userRepository) ListUsers(ctx context.Context, q query.Query) ([]user.Us
 	queryDB := q.ApplyQuery(r.db)
 	err := queryDB.WithContext(ctx).Find(&users).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrInvalidField) {
+			return nil, errors.ErrInvalidPayload
+		}
 		return nil, fmt.Errorf("failed to list users: %w", err)
 	}
 	return users, nil
@@ -77,6 +80,9 @@ func (r userRepository) CountUsers(ctx context.Context, filters map[string][]str
 	var count int64
 	err := db.Count(&count).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrInvalidField) {
+			return 0, errors.ErrInvalidPayload
+		}
 		return 0, fmt.Errorf("failed to get count: %w", err)
 	}
 	return count, err

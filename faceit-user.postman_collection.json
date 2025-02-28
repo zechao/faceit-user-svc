@@ -21,7 +21,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechado@jin.com\",\r\n    \"country\": \"ES\"\r\n}",
+					"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@jin.com\",\r\n    \"country\": \"ES\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -60,12 +60,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/users",
-							"protocol": "http",
+							"raw": "{{API_URL}}/users",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"users"
 							]
@@ -302,12 +300,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/users/:id",
-							"protocol": "http",
+							"raw": "{{API_URL}}/users/:id",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"users",
 								":id"
@@ -613,12 +609,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/users/:id",
-							"protocol": "http",
+							"raw": "{{API_URL}}/users/:id",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"users",
 								":id"
@@ -733,7 +727,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&country=ES",
+					"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&country=ES&country=GB",
 					"host": [
 						"{{API_URL}}"
 					],
@@ -775,6 +769,10 @@
 							"key": "id",
 							"value": "c1e17c56-f615-4f5c-a73e-837c8fafe456",
 							"disabled": true
+						},
+						{
+							"key": "country",
+							"value": "GB"
 						}
 					]
 				}
@@ -1213,8 +1211,17 @@
 								"disabled": true
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{API_URL}}/users?page=-1&page_size=0&sort_by=first_name&sort_order=afdf&id=1a8a5a17-34b5-4acd-b81e-&country=ES&id=7062908d-f191-4fd9-8564-bd1a7a5a6540",
+							"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&country=ES&password1=1&da",
 							"host": [
 								"{{API_URL}}"
 							],
@@ -1224,11 +1231,11 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "-1"
+									"value": "1"
 								},
 								{
 									"key": "page_size",
-									"value": "0"
+									"value": "10"
 								},
 								{
 									"key": "sort_by",
@@ -1236,11 +1243,12 @@
 								},
 								{
 									"key": "sort_order",
-									"value": "afdf"
+									"value": "asc"
 								},
 								{
 									"key": "id",
-									"value": "1a8a5a17-34b5-4acd-b81e-"
+									"value": "1a8a5a17-34b5-4acd-b81e-a00e0b1760ab",
+									"disabled": true
 								},
 								{
 									"key": "country",
@@ -1248,7 +1256,21 @@
 								},
 								{
 									"key": "id",
-									"value": "7062908d-f191-4fd9-8564-bd1a7a5a6540"
+									"value": "7062908d-f191-4fd9-8564-bd1a7a5a6540",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "c1e17c56-f615-4f5c-a73e-837c8fafe456",
+									"disabled": true
+								},
+								{
+									"key": "password1",
+									"value": "1"
+								},
+								{
+									"key": "da",
+									"value": null
 								}
 							]
 						}
@@ -1263,19 +1285,19 @@
 						},
 						{
 							"key": "X-Trace-Id",
-							"value": "e7c41516-549c-4725-8201-083faa3a0ca8"
+							"value": "66d9825d-d167-4fb5-a1f4-7fa42f7b723e"
 						},
 						{
 							"key": "Date",
-							"value": "Fri, 28 Feb 2025 01:12:49 GMT"
+							"value": "Fri, 28 Feb 2025 18:32:53 GMT"
 						},
 						{
 							"key": "Content-Length",
-							"value": "345"
+							"value": "197"
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"code\": 400,\n    \"message\": \"INVALID_QUERY_PARAMETERS\",\n    \"details\": [\n        {\n            \"field\": \"page\",\n            \"description\": \"page number must be greater than 0\"\n        },\n        {\n            \"field\": \"page_size\",\n            \"description\": \"page_size must be greater than 0\"\n        },\n        {\n            \"field\": \"sort_order\",\n            \"description\": \"sort_order must be desc or asc\"\n        },\n        {\n            \"field\": \"id\",\n            \"description\": \"invalid id format: 1a8a5a17-34b5-4acd-b81e-\"\n        }\n    ]\n}"
+					"body": "{\n    \"code\": 400,\n    \"message\": \"INVALID_QUERY_PARAMETERS\",\n    \"details\": [\n        {\n            \"field\": \"password1\",\n            \"description\": \"parameter password1 is not supported\"\n        },\n        {\n            \"field\": \"da\",\n            \"description\": \"parameter da is not supported\"\n        }\n    ]\n}"
 				}
 			]
 		},
