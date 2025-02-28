@@ -1,0 +1,1448 @@
+{
+	"info": {
+		"_postman_id": "45bd9d12-d5d4-4f09-82ae-a981b9c6c0b0",
+		"name": "faceit-user",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2722357"
+	},
+	"item": [
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Trace-ID",
+						"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechado@jin.com\",\r\n    \"country\": \"ES\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/users",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Trace-ID",
+								"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechado@jin.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "locahost:8080/users",
+							"host": [
+								"locahost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "2f385153-61bd-4838-aaaa-13f667f33744"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:49:46 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "236"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"a797919d-3cf1-47ff-9bf2-b0650cee9817\",\n    \"first_name\": \"zechao\",\n    \"last_name\": \"jin\",\n    \"nick_name\": \"zen\",\n    \"email\": \"zechado@jin.com\",\n    \"country\": \"ES\",\n    \"created_at\": \"2025-02-28T00:49:46.667718262Z\",\n    \"updated_at\": \"2025-02-28T00:49:46.667718262Z\"\n}"
+				},
+				{
+					"name": "error duplicated email",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Trace-ID",
+								"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechado@jin.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "locahost:8080/users",
+							"host": [
+								"locahost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"status": "Conflict",
+					"code": 409,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "82dd0cea-1faa-493d-a195-a592ab6f96d0"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:50:01 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "46"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 409,\n    \"message\": \"record already exists\"\n}"
+				},
+				{
+					"name": "invalid payload",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Trace-ID",
+								"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"\",\r\n    \"last_name\": \"\",\r\n    \"nick_name\": \"\",\r\n    \"password\": \"\",\r\n    \"email\": \"@jin.com\",\r\n    \"country\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "locahost:8080/users",
+							"host": [
+								"locahost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "8ddc33a9-a4b7-40be-b2ad-56e373ca48d3"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:50:42 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "441"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"invalid user creation request\",\n    \"details\": [\n        {\n            \"field\": \"first_name\",\n            \"description\": \"first_name is required\"\n        },\n        {\n            \"field\": \"last_name\",\n            \"description\": \"last_name is required\"\n        },\n        {\n            \"field\": \"nick_name\",\n            \"description\": \"nick_name is required\"\n        },\n        {\n            \"field\": \"password\",\n            \"description\": \"password is required\"\n        },\n        {\n            \"field\": \"email\",\n            \"description\": \"invalid email format\"\n        },\n        {\n            \"field\": \"country\",\n            \"description\": \"country must be a 2-letter ISO country code\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "unexpected error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Trace-ID",
+								"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao23@jin.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "locahost:8080/users",
+							"host": [
+								"locahost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "db880e81-f050-4e68-bbdd-6d21d0492a01"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:57:07 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "57"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 500,\n    \"message\": \"unexpected internal server error\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Update",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/user",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"country\": \"CN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "a797919d-3cf1-47ff-9bf2-b0650cee9817"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "f5de99b0-c3e3-4a71-8ba6-879092e82c98"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:59:55 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "233"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"a797919d-3cf1-47ff-9bf2-b0650cee9817\",\n    \"first_name\": \"zechao\",\n    \"last_name\": \"jin\",\n    \"nick_name\": \"zen\",\n    \"email\": \"zechado@jin.com\",\n    \"country\": \"CN\",\n    \"created_at\": \"2025-02-28T00:49:46.667718Z\",\n    \"updated_at\": \"2025-02-28T00:59:55.891240731Z\"\n}"
+				},
+				{
+					"name": "not found",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"country\": \"GB\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "locahost:8080/users/:id",
+							"host": [
+								"locahost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "fa08141d-9a59-4ac6-a045-e00857eb90bd"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "649d629d-fef8-4592-86cb-243971bd3ea9"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:51:51 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "41"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 404,\n    \"message\": \"record not found\"\n}"
+				},
+				{
+					"name": "unexpected error",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"country\": \"GB\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "fa08141d-9a59-4ac6-a045-e00857eb90bd"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "3d63f00a-58a3-4b0b-952d-72b9673a5dd1"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:57:43 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "57"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 500,\n    \"message\": \"unexpected internal server error\"\n}"
+				},
+				{
+					"name": "invalid payload",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"\",\r\n    \"country\": \"CN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "a797919d-3cf1-47ff-9bf2-b0650cee9817"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "cd899678-dd4c-4009-8380-cbfc5ff6787f"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:00:16 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "126"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"invalid user update request\",\n    \"details\": [\n        {\n            \"field\": \"first_name\",\n            \"description\": \"first_name is required\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "invalid user id",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"country\": \"CN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "a797919d-3cf1-47ff-9bf2-"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "77ba16aa-03f8-435f-b7fd-e0a9c23a1ac6"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:03:09 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "40"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"invalid user id\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/users/:id",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Trace-Id",
+							"value": "6d8f5b4a-17d0-482f-80d8-c7f141b23b9f"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:02:00 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "invalid user id",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "da79667b-3b8e-4f2a-95c4-"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "61fc1f7b-9327-4161-9a4e-ef75f0868fa7"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:03:59 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "40"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"invalid user id\"\n}"
+				}
+			]
+		},
+		{
+			"name": "list",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Trace-Id",
+						"value": "c969c794-977f-44b7-a323-a1309be82e41",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&id=1a8a5a17-34b5-4acd-b81e-a00e0b1760ab&country=ES&id=7062908d-f191-4fd9-8564-bd1a7a5a6540",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "page_size",
+							"value": "10"
+						},
+						{
+							"key": "sort_by",
+							"value": "first_name"
+						},
+						{
+							"key": "sort_order",
+							"value": "asc"
+						},
+						{
+							"key": "id",
+							"value": "1a8a5a17-34b5-4acd-b81e-a00e0b1760ab"
+						},
+						{
+							"key": "country",
+							"value": "ES"
+						},
+						{
+							"key": "id",
+							"value": "7062908d-f191-4fd9-8564-bd1a7a5a6540"
+						},
+						{
+							"key": "id",
+							"value": "c1e17c56-f615-4f5c-a73e-837c8fafe456",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success without query",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Trace-Id",
+								"value": "c969c794-977f-44b7-a323-a1309be82e41",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "page_size",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "sort_by",
+									"value": "first_name",
+									"disabled": true
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "f3f171ba-76d9-4178-a6d9-65375a6beee3",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "GB",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "5d191f48-c35d-4539-a237-3bf6066d2f59",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "c1e17c56-f615-4f5c-a73e-837c8fafe456",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "c21e6fa0-c6b3-414d-a9dd-07699279631c"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:05:28 GMT"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"page\": 1,\n    \"page_size\": 100,\n    \"total_records\": 9,\n    \"sort_by\": \"created_at\",\n    \"sort_order\": \"desc\",\n    \"filters\": {},\n    \"data\": [\n        {\n            \"id\": \"f5408521-4ecb-4d9e-917c-6e79269e797b\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao23@jin.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:56:13.648115Z\",\n            \"updated_at\": \"2025-02-28T00:56:13.648115Z\"\n        },\n        {\n            \"id\": \"8755d24f-9e3f-4791-a80b-f562a2751f2e\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao2@jin.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:53:51.307103Z\",\n            \"updated_at\": \"2025-02-28T00:53:51.307103Z\"\n        },\n        {\n            \"id\": \"9af549a4-0240-4782-a35b-692decb82728\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@jin.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:51:13.951846Z\",\n            \"updated_at\": \"2025-02-28T00:51:13.951846Z\"\n        },\n        {\n            \"id\": \"a797919d-3cf1-47ff-9bf2-b0650cee9817\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechado@jin.com\",\n            \"country\": \"CN\",\n            \"created_at\": \"2025-02-28T00:49:46.667718Z\",\n            \"updated_at\": \"2025-02-28T01:04:17.366751Z\"\n        },\n        {\n            \"id\": \"f3dfc2aa-1d5a-47f4-9a8d-69dcb9bc47ed\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechado@sas.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:46:27.589971Z\",\n            \"updated_at\": \"2025-02-28T00:46:27.589971Z\"\n        },\n        {\n            \"id\": \"5bf854e5-1b1c-427d-81e8-7308e45bfb2d\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@sas.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:44:36.508064Z\",\n            \"updated_at\": \"2025-02-28T00:44:36.508064Z\"\n        },\n        {\n            \"id\": \"7bf0157d-7c19-432a-8d51-c57bf7774f33\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@s.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:43:53.859004Z\",\n            \"updated_at\": \"2025-02-28T00:43:53.859004Z\"\n        },\n        {\n            \"id\": \"7062908d-f191-4fd9-8564-bd1a7a5a6540\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@zs.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:39:43.849408Z\",\n            \"updated_at\": \"2025-02-28T00:39:43.849408Z\"\n        },\n        {\n            \"id\": \"1a8a5a17-34b5-4acd-b81e-a00e0b1760ab\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@zsdss.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-27T21:28:12.657159Z\",\n            \"updated_at\": \"2025-02-27T21:28:12.657159Z\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "success last page",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Trace-Id",
+								"value": "c969c794-977f-44b7-a323-a1309be82e41",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users?page=2&page_size=8",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "page_size",
+									"value": "8"
+								},
+								{
+									"key": "sort_by",
+									"value": "first_name",
+									"disabled": true
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "f3f171ba-76d9-4178-a6d9-65375a6beee3",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "GB",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "5d191f48-c35d-4539-a237-3bf6066d2f59",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "c1e17c56-f615-4f5c-a73e-837c8fafe456",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "dedd7db8-438a-4ca1-808a-3eea6be4f08e"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:06:05 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "339"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"page\": 2,\n    \"page_size\": 8,\n    \"total_records\": 9,\n    \"sort_by\": \"created_at\",\n    \"sort_order\": \"desc\",\n    \"filters\": {},\n    \"data\": [\n        {\n            \"id\": \"1a8a5a17-34b5-4acd-b81e-a00e0b1760ab\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@zsdss.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-27T21:28:12.657159Z\",\n            \"updated_at\": \"2025-02-27T21:28:12.657159Z\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "success out of page",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Trace-Id",
+								"value": "c969c794-977f-44b7-a323-a1309be82e41",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users?page=2&page_size=10",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								},
+								{
+									"key": "sort_by",
+									"value": "first_name",
+									"disabled": true
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "f3f171ba-76d9-4178-a6d9-65375a6beee3",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "GB",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "5d191f48-c35d-4539-a237-3bf6066d2f59",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "c1e17c56-f615-4f5c-a73e-837c8fafe456",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "afd7a80a-46bd-4c3e-a1ed-6b0c9451491f"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:06:26 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "109"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"page\": 2,\n    \"page_size\": 10,\n    \"total_records\": 9,\n    \"sort_by\": \"created_at\",\n    \"sort_order\": \"desc\",\n    \"filters\": {},\n    \"data\": []\n}"
+				},
+				{
+					"name": "success filter",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Trace-Id",
+								"value": "c969c794-977f-44b7-a323-a1309be82e41",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&country=ES",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								},
+								{
+									"key": "sort_by",
+									"value": "first_name"
+								},
+								{
+									"key": "sort_order",
+									"value": "asc"
+								},
+								{
+									"key": "id",
+									"value": "f3f171ba-76d9-4178-a6d9-65375a6beee3",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "ES"
+								},
+								{
+									"key": "id",
+									"value": "5d191f48-c35d-4539-a237-3bf6066d2f59",
+									"disabled": true
+								},
+								{
+									"key": "id",
+									"value": "c1e17c56-f615-4f5c-a73e-837c8fafe456",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "72d165ec-35bb-4d1c-89f3-e6b7cf28c917"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:07:18 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1966"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"page\": 1,\n    \"page_size\": 10,\n    \"total_records\": 8,\n    \"sort_by\": \"first_name\",\n    \"sort_order\": \"asc\",\n    \"filters\": {\n        \"country\": [\n            \"ES\"\n        ]\n    },\n    \"data\": [\n        {\n            \"id\": \"1a8a5a17-34b5-4acd-b81e-a00e0b1760ab\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@zsdss.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-27T21:28:12.657159Z\",\n            \"updated_at\": \"2025-02-27T21:28:12.657159Z\"\n        },\n        {\n            \"id\": \"7062908d-f191-4fd9-8564-bd1a7a5a6540\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@zs.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:39:43.849408Z\",\n            \"updated_at\": \"2025-02-28T00:39:43.849408Z\"\n        },\n        {\n            \"id\": \"7bf0157d-7c19-432a-8d51-c57bf7774f33\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@s.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:43:53.859004Z\",\n            \"updated_at\": \"2025-02-28T00:43:53.859004Z\"\n        },\n        {\n            \"id\": \"5bf854e5-1b1c-427d-81e8-7308e45bfb2d\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@sas.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:44:36.508064Z\",\n            \"updated_at\": \"2025-02-28T00:44:36.508064Z\"\n        },\n        {\n            \"id\": \"f3dfc2aa-1d5a-47f4-9a8d-69dcb9bc47ed\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechado@sas.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:46:27.589971Z\",\n            \"updated_at\": \"2025-02-28T00:46:27.589971Z\"\n        },\n        {\n            \"id\": \"9af549a4-0240-4782-a35b-692decb82728\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@jin.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:51:13.951846Z\",\n            \"updated_at\": \"2025-02-28T00:51:13.951846Z\"\n        },\n        {\n            \"id\": \"8755d24f-9e3f-4791-a80b-f562a2751f2e\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao2@jin.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:53:51.307103Z\",\n            \"updated_at\": \"2025-02-28T00:53:51.307103Z\"\n        },\n        {\n            \"id\": \"f5408521-4ecb-4d9e-917c-6e79269e797b\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao23@jin.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:56:13.648115Z\",\n            \"updated_at\": \"2025-02-28T00:56:13.648115Z\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "success list filter",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Trace-Id",
+								"value": "c969c794-977f-44b7-a323-a1309be82e41",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&id=1a8a5a17-34b5-4acd-b81e-a00e0b1760ab&country=ES&id=7062908d-f191-4fd9-8564-bd1a7a5a6540",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								},
+								{
+									"key": "sort_by",
+									"value": "first_name"
+								},
+								{
+									"key": "sort_order",
+									"value": "asc"
+								},
+								{
+									"key": "id",
+									"value": "1a8a5a17-34b5-4acd-b81e-a00e0b1760ab"
+								},
+								{
+									"key": "country",
+									"value": "ES"
+								},
+								{
+									"key": "id",
+									"value": "7062908d-f191-4fd9-8564-bd1a7a5a6540"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "d9d0ee43-e99f-4110-92b3-4bbf6505ce82"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:08:03 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "669"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"page\": 1,\n    \"page_size\": 10,\n    \"total_records\": 2,\n    \"sort_by\": \"first_name\",\n    \"sort_order\": \"asc\",\n    \"filters\": {\n        \"country\": [\n            \"ES\"\n        ],\n        \"id\": [\n            \"1a8a5a17-34b5-4acd-b81e-a00e0b1760ab\",\n            \"7062908d-f191-4fd9-8564-bd1a7a5a6540\"\n        ]\n    },\n    \"data\": [\n        {\n            \"id\": \"1a8a5a17-34b5-4acd-b81e-a00e0b1760ab\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@zsdss.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-27T21:28:12.657159Z\",\n            \"updated_at\": \"2025-02-27T21:28:12.657159Z\"\n        },\n        {\n            \"id\": \"7062908d-f191-4fd9-8564-bd1a7a5a6540\",\n            \"first_name\": \"zechao\",\n            \"last_name\": \"jin\",\n            \"nick_name\": \"zen\",\n            \"email\": \"zechao@zs.com\",\n            \"country\": \"ES\",\n            \"created_at\": \"2025-02-28T00:39:43.849408Z\",\n            \"updated_at\": \"2025-02-28T00:39:43.849408Z\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "invalid query",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Trace-Id",
+								"value": "c969c794-977f-44b7-a323-a1309be82e41",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/users?page=-1&page_size=0&sort_by=first_name&sort_order=afdf&id=1a8a5a17-34b5-4acd-b81e-&country=ES&id=7062908d-f191-4fd9-8564-bd1a7a5a6540",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "-1"
+								},
+								{
+									"key": "page_size",
+									"value": "0"
+								},
+								{
+									"key": "sort_by",
+									"value": "first_name"
+								},
+								{
+									"key": "sort_order",
+									"value": "afdf"
+								},
+								{
+									"key": "id",
+									"value": "1a8a5a17-34b5-4acd-b81e-"
+								},
+								{
+									"key": "country",
+									"value": "ES"
+								},
+								{
+									"key": "id",
+									"value": "7062908d-f191-4fd9-8564-bd1a7a5a6540"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "e7c41516-549c-4725-8201-083faa3a0ca8"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 01:12:49 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "345"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"INVALID_QUERY_PARAMETERS\",\n    \"details\": [\n        {\n            \"field\": \"page\",\n            \"description\": \"page number must be greater than 0\"\n        },\n        {\n            \"field\": \"page_size\",\n            \"description\": \"page_size must be greater than 0\"\n        },\n        {\n            \"field\": \"sort_order\",\n            \"description\": \"sort_order must be desc or asc\"\n        },\n        {\n            \"field\": \"id\",\n            \"description\": \"invalid id format: 1a8a5a17-34b5-4acd-b81e-\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "healthcheck",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Trace-ID",
+						"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/health",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ok request without traceid",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "locahost:8080/health",
+							"host": [
+								"locahost"
+							],
+							"port": "8080",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "af16f7f5-0115-4391-a827-bd16a432dcf7"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:47:51 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "15"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"ok\"\n}"
+				},
+				{
+					"name": "ok request with traceid",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Trace-ID",
+								"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/health",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "X-Trace-Id",
+							"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Feb 2025 00:49:13 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "15"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"ok\"\n}"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": "locahost:8080",
+			"type": "default"
+		}
+	]
+}
