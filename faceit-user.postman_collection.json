@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "45bd9d12-d5d4-4f09-82ae-a981b9c6c0b0",
+		"_postman_id": "c7a6c56c-17e2-4e0f-b35b-22ac89154bfd",
 		"name": "faceit-user",
+		"description": "The faceit-user-svc is a user management service that provides functionalities to add, modify, remove, and list users with pagination and filtering capabilities. The service is designed to be scalable, maintainable, and easy to integrate with other services.\n\nsee more detail in [https://github.com/zechao/faceit-user-svc](https://github.com/zechao/faceit-user-svc)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "2722357"
+		"_exporter_id": "18464597"
 	},
 	"item": [
 		{
@@ -46,8 +47,7 @@
 							{
 								"key": "X-Trace-ID",
 								"value": "da79667b-3b8e-4f2a-95c4-4d54c846499c",
-								"type": "text",
-								"disabled": true
+								"type": "text"
 							}
 						],
 						"body": {
@@ -60,9 +60,10 @@
 							}
 						},
 						"url": {
-							"raw": "locahost:8080/users",
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
 							"host": [
-								"locahost"
+								"localhost"
 							],
 							"port": "8080",
 							"path": [
@@ -116,11 +117,10 @@
 							}
 						},
 						"url": {
-							"raw": "locahost:8080/users",
+							"raw": "{{API_URL}}/users",
 							"host": [
-								"locahost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"users"
 							]
@@ -172,11 +172,10 @@
 							}
 						},
 						"url": {
-							"raw": "locahost:8080/users",
+							"raw": "{{API_URL}}/users",
 							"host": [
-								"locahost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"users"
 							]
@@ -228,11 +227,10 @@
 							}
 						},
 						"url": {
-							"raw": "locahost:8080/users",
+							"raw": "{{API_URL}}/users",
 							"host": [
-								"locahost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"users"
 							]
@@ -304,10 +302,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_URL}}/users/:id",
+							"raw": "http://localhost:8080/users/:id",
+							"protocol": "http",
 							"host": [
-								"{{API_URL}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":id"
@@ -359,11 +359,10 @@
 							}
 						},
 						"url": {
-							"raw": "locahost:8080/users/:id",
+							"raw": "{{API_URL}}/users/:id",
 							"host": [
-								"locahost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"users",
 								":id"
@@ -614,10 +613,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_URL}}/users/:id",
+							"raw": "http://localhost:8080/users/:id",
+							"protocol": "http",
 							"host": [
-								"{{API_URL}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":id"
@@ -648,7 +649,7 @@
 						}
 					],
 					"cookie": [],
-					"body": null
+					"body": ""
 				},
 				{
 					"name": "invalid user id",
@@ -732,7 +733,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&id=1a8a5a17-34b5-4acd-b81e-a00e0b1760ab&country=ES&id=7062908d-f191-4fd9-8564-bd1a7a5a6540",
+					"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&country=ES",
 					"host": [
 						"{{API_URL}}"
 					],
@@ -758,7 +759,8 @@
 						},
 						{
 							"key": "id",
-							"value": "1a8a5a17-34b5-4acd-b81e-a00e0b1760ab"
+							"value": "1a8a5a17-34b5-4acd-b81e-a00e0b1760ab",
+							"disabled": true
 						},
 						{
 							"key": "country",
@@ -766,7 +768,8 @@
 						},
 						{
 							"key": "id",
-							"value": "7062908d-f191-4fd9-8564-bd1a7a5a6540"
+							"value": "7062908d-f191-4fd9-8564-bd1a7a5a6540",
+							"disabled": true
 						},
 						{
 							"key": "id",
@@ -789,20 +792,13 @@
 								"disabled": true
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{API_URL}}/users",
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
 							"host": [
-								"{{API_URL}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users"
 							],
@@ -886,15 +882,6 @@
 								"disabled": true
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{API_URL}}/users?page=2&page_size=8",
 							"host": [
@@ -981,15 +968,6 @@
 								"disabled": true
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{API_URL}}/users?page=2&page_size=10",
 							"host": [
@@ -1076,15 +1054,6 @@
 								"disabled": true
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&country=ES",
 							"host": [
@@ -1168,15 +1137,6 @@
 								"disabled": true
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{API_URL}}/users?page=1&page_size=10&sort_by=first_name&sort_order=asc&id=1a8a5a17-34b5-4acd-b81e-a00e0b1760ab&country=ES&id=7062908d-f191-4fd9-8564-bd1a7a5a6540",
 							"host": [
@@ -1253,15 +1213,6 @@
 								"disabled": true
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"zechao\",\r\n    \"last_name\": \"jin\",\r\n    \"nick_name\": \"zen\",\r\n    \"password\": \"superpassword\",\r\n    \"email\": \"zechao@zechao.com\",\r\n    \"country\": \"ES\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{API_URL}}/users?page=-1&page_size=0&sort_by=first_name&sort_order=afdf&id=1a8a5a17-34b5-4acd-b81e-&country=ES&id=7062908d-f191-4fd9-8564-bd1a7a5a6540",
 							"host": [
@@ -1356,9 +1307,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "locahost:8080/health",
+							"raw": "http://localhost:8080/health",
+							"protocol": "http",
 							"host": [
-								"locahost"
+								"localhost"
 							],
 							"port": "8080",
 							"path": [
@@ -1438,10 +1390,32 @@
 			]
 		}
 	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
 			"key": "API_URL",
-			"value": "locahost:8080",
+			"value": "http://localhost:8080",
 			"type": "default"
 		}
 	]

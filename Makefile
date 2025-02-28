@@ -7,11 +7,11 @@ install-tools:
 
 run:
 	echo "Running the application using docker-compose in production mode"
-	@docker-compose --env-file .env.production up -d --build
+	@docker compose --env-file .env.production up -d --build
 
 run-dev:
 	@echo "Running the application in development mode"
-	docker-compose up -d db nats --wait
+	docker compose up -d db nats --wait
 	@go run cmd/main.go
 
 test:
